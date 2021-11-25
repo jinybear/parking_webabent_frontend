@@ -15,6 +15,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 
 import axios from 'axios';
+import AlertDialog from '../util/Dialog/AlertDialog';
 
 function Copyright(props) {
   return (
@@ -33,6 +34,10 @@ export default function Login() {
   const [fail, setFail] = React.useState(false);
   const history = useHistory();
 
+  const getOpened = (e) => {
+    setFail(e);
+  }
+
   const handleClose = () => {
     setFail(false);
   }  
@@ -48,19 +53,19 @@ export default function Login() {
     });    
     
     axios.post(      
-      'http://localhost:8080/login',
+      'http://localhost:8080/user/login',
       {
-        name: data.get('ID'),
+        id: data.get('ID'),
         password: data.get('password')
       },
       //{ withCredentials: true}
     ).then((res) => {
-      console.log(res.status);        
       console.log("token : " + res.data);              
+      axios.defaults.headers.common['Authorization'] = `Bearer ${res.data}`;
       setFail(false);
       history.push("/");
+      
     }, (error) => {
-      console.log("got you");
       setFail(true);
     })    
   };
@@ -89,10 +94,11 @@ export default function Login() {
               autoHideDuration={3000}
               anchorOrigin={{ vertical:'top', horizontal:'right' }}
               open={fail}
-              onClose={handleClose}              
+              onClose={handleClose}
             >
               <Alert onClose={handleClose} severity="error">Login 실패 - 입력정보를 확인하세요.</Alert>
             </Snackbar>
+            
             <TextField
               margin="normal"
               required

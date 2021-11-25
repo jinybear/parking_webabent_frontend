@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useHistory } from "react-router-dom";
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
@@ -18,9 +19,12 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { secondaryListItems } from './menulist';
 import MainListItems from './menulist';
+
 import Chart from '../util/chart/Chart';
+import axios from 'axios';
 // import Deposits from './Deposits';
 // import Orders from './Orders';
 
@@ -83,10 +87,26 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const mdTheme = createTheme();
 
-function MainContent() {
+function MainContent() {  
   const [open, setOpen] = React.useState(true);
+  const history = useHistory();
   const toggleDrawer = () => {
     setOpen(!open);
+  };
+
+  const handleLogout = () => {    
+    axios.post(      
+      'http://localhost:8080/user/logout'
+    ).then((res) => {
+      axios.defaults.headers.common['Authorization'] = "";
+      console.log(res.status);      
+      history.push("/login");
+      console.log("logout complete");
+      
+    }, (error) => {
+      console.log("failed to logout");
+    })
+    
   };
 
   return (
@@ -122,13 +142,12 @@ function MainContent() {
               Dashboard
             </Typography>            
             
-            <AccountBoxIcon style={{margin: '5px'}}/>
-            
-            {<IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton> }
+            <AccountBoxIcon style={{margin: '5px'}} />
+              백승진            
+            <IconButton onClick={handleLogout} color = "inherit" title="logout">
+              <LogoutIcon style={{marginLeft: '25px'}} />
+              
+            </IconButton>
             
           </Toolbar>
         </AppBar>
