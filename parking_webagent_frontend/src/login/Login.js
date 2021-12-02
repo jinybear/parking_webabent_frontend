@@ -15,7 +15,6 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 
 import axios from 'axios';
-import AlertDialog from '../util/Dialog/AlertDialog';
 
 function Copyright(props) {
   return (
@@ -31,15 +30,12 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function Login() {
-  const [fail, setFail] = React.useState(false);
+  const [failVO, setFailVO] = React.useState({"fail": false, "message": ""});
+  
   const history = useHistory();
 
-  const getOpened = (e) => {
-    setFail(e);
-  }
-
   const handleClose = () => {
-    setFail(false);
+    setFailVO({...failVO, "fail": false});
   }  
   
   const handleSubmit = (event) => {
@@ -62,11 +58,14 @@ export default function Login() {
     ).then((res) => {
       console.log("token : " + res.data);              
       axios.defaults.headers.common['Authorization'] = `Bearer ${res.data}`;
-      setFail(false);
+      
+      handleClose();
       history.push("/");
       
     }, (error) => {
-      setFail(true);
+      console.log("got: " + error.response.data);
+      setFailVO({...failVO, "fail": true, "message": error.response.data});
+      
     })    
   };
 
@@ -93,10 +92,10 @@ export default function Login() {
             <Snackbar 
               autoHideDuration={3000}
               anchorOrigin={{ vertical:'top', horizontal:'right' }}
-              open={fail}
+              open={failVO["fail"]}
               onClose={handleClose}
             >
-              <Alert onClose={handleClose} severity="error">Login 실패 - 입력정보를 확인하세요.</Alert>
+              <Alert onClose={handleClose} severity="error">Login 실패 - {failVO["message"]}</Alert>
             </Snackbar>
             
             <TextField

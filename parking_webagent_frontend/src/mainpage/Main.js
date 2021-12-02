@@ -25,6 +25,7 @@ import MainListItems from './menulist';
 
 import Chart from '../util/chart/Chart';
 import axios from 'axios';
+import AlertDialog from '../util/Dialog/AlertDialog';
 // import Deposits from './Deposits';
 // import Orders from './Orders';
 
@@ -89,25 +90,30 @@ const mdTheme = createTheme();
 
 function MainContent() {  
   const [open, setOpen] = React.useState(true);
+  const [title, setTitle] = React.useState("");
+
   const history = useHistory();
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
+  const [openLogoutAlarm, setOpenLogoutAlarm] = React.useState(false);
+  
   const handleLogout = () => {    
+    setOpenLogoutAlarm(true);
+  };
+
+  const requestLogout = () => {
     axios.post(      
       'http://localhost:8080/user/logout'
     ).then((res) => {
       axios.defaults.headers.common['Authorization'] = "";
-      console.log(res.status);      
       history.push("/login");
-      console.log("logout complete");
       
     }, (error) => {
       console.log("failed to logout");
-    })
-    
-  };
+    })    
+  }
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -139,18 +145,18 @@ function MainContent() {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Dashboard
+              {title}
             </Typography>            
             
             <AccountBoxIcon style={{margin: '5px'}} />
               백승진            
             <IconButton onClick={handleLogout} color = "inherit" title="logout">
-              <LogoutIcon style={{marginLeft: '25px'}} />
-              
+              <LogoutIcon style={{marginLeft: '25px'}} />              
             </IconButton>
             
           </Toolbar>
         </AppBar>
+        { openLogoutAlarm ? <AlertDialog level="info" title="logout" message="정말로 로그아웃 하시겠습니까?" open={setOpenLogoutAlarm} doYes={requestLogout}/>: null }
         <Drawer variant="permanent" open={open}>        
           <Toolbar
             sx={{
@@ -165,7 +171,7 @@ function MainContent() {
             </IconButton>
           </Toolbar>
           <Divider />
-            <MainListItems/>
+            <MainListItems setTitle={setTitle}/>
           <Divider />
           { <List>{secondaryListItems}</List> }
         </Drawer>

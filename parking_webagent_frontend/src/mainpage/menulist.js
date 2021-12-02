@@ -16,11 +16,23 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import { ExpandLess, ExpandMore, HeadsetMicSharp } from '@mui/icons-material';
 
-export default function MainListItems() {  
+export default function MainListItems(props) {  
   const [liveOpen, setLiveOpen] = React.useState(true);
 
   const liveClick = () => {
     setLiveOpen(!liveOpen);
+  }
+
+  const setTitle = (title) => {
+    props.setTitle(title);
+  }
+
+  const handleMenuClick = (title) => {
+    setTitle(title);
+
+    if (title === "라이브"){
+      setLiveOpen(!liveOpen);
+    }
   }
 
   
@@ -62,17 +74,17 @@ export default function MainListItems() {
   
   return (
     <List>
-      <ListItem button >
+      <ListItem button onClick={() => {handleMenuClick("대쉬보드");}} >
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
         <ListItemText primary="대쉬보드" />
       </ListItem>
-      <ListItem button >
-        <ListItemIcon>
+      <ListItem button onClick={() => {handleMenuClick("라이브");}}>
+        <ListItemIcon >
           <VideocamIcon />
         </ListItemIcon>
-        <ListItemText primary="라이브" onClick={liveClick} />
+        <ListItemText primary="라이브" />
         {liveOpen ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
       <Collapse in={liveOpen} timeout="auto" unmountOnExit>
@@ -107,16 +119,15 @@ export default function MainListItems() {
       </Collapse>
       
 
-      <ListItem button >
-        <ListItemIcon>
+      <ListItem button onClick={() => {handleMenuClick("통계");}}>
+        <ListItemIcon >
           <BarChartIcon />
         </ListItemIcon>
         <ListItemText primary="통계" />
       </ListItem>
       
-
-      <ListItem button>
-        <ListItemIcon>
+      <ListItem button onClick={() => {handleMenuClick("공지사항");}}>
+        <ListItemIcon >
           <CommentIcon />
         </ListItemIcon>
         <ListItemText primary="공지사항" />
