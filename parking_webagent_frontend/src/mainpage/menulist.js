@@ -15,9 +15,12 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import { ExpandLess, ExpandMore, HeadsetMicSharp } from '@mui/icons-material';
+import { useHistory } from 'react-router';
 
 export default function MainListItems(props) {  
   const [liveOpen, setLiveOpen] = React.useState(true);
+
+  const history = useHistory();
 
   const liveClick = () => {
     setLiveOpen(!liveOpen);
@@ -32,7 +35,11 @@ export default function MainListItems(props) {
 
     if (title === "라이브"){
       setLiveOpen(!liveOpen);
-    }
+      history.push("/settingpage");
+    } else if(title == "대쉬보드") {
+      history.push("/dashboardpage");  
+    } 
+
   }
 
   

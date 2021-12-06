@@ -25,7 +25,9 @@ import MainListItems from './menulist';
 
 import Chart from '../util/chart/Chart';
 import axios from 'axios';
+import { axiosApiInstance } from '../routes';
 import AlertDialog from '../util/Dialog/AlertDialog';
+import MainRoutes from '../MainRoutes';
 // import Deposits from './Deposits';
 // import Orders from './Orders';
 
@@ -104,10 +106,9 @@ function MainContent() {
   };
 
   const requestLogout = () => {
-    axios.post(      
+    axiosApiInstance.post(      
       'http://localhost:8080/user/logout'
     ).then((res) => {
-      axios.defaults.headers.common['Authorization'] = "";
       history.push("/login");
       
     }, (error) => {
@@ -151,13 +152,14 @@ function MainContent() {
             <AccountBoxIcon style={{margin: '5px'}} />
               백승진            
             <IconButton onClick={handleLogout} color = "inherit" title="logout">
-              <LogoutIcon style={{marginLeft: '25px'}} />              
+              <LogoutIcon style={{marginLeft: '25px'}} />
             </IconButton>
             
           </Toolbar>
         </AppBar>
         { openLogoutAlarm ? <AlertDialog level="info" title="logout" message="정말로 로그아웃 하시겠습니까?" open={setOpenLogoutAlarm} doYes={requestLogout}/>: null }
-        <Drawer variant="permanent" open={open}>        
+        
+        <Drawer variant="permanent" open={open}>                
           <Toolbar
             sx={{
               display: 'flex',
@@ -187,7 +189,7 @@ function MainContent() {
             overflow: 'auto',
           }}
         >                  
-          <Toolbar />
+        <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
               <Grid item xs={12} md={8} lg={9}>                
@@ -224,8 +226,12 @@ function MainContent() {
               </Grid>
             </Grid>
             <Copyright sx={{ pt: 4 }} />
+            <MainRoutes/>
           </Container>
+          
         </Box>
+        
+        
       </Box>
     </ThemeProvider>
   );

@@ -13,8 +13,9 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-
+import { axiosApiInstance } from '../routes';
 import axios from 'axios';
+
 
 function Copyright(props) {
   return (
@@ -32,7 +33,7 @@ const theme = createTheme();
 export default function Login() {
   const [failVO, setFailVO] = React.useState({"fail": false, "message": ""});
   
-  const history = useHistory();
+  const history = useHistory();  
 
   const handleClose = () => {
     setFailVO({...failVO, "fail": false});
@@ -46,7 +47,7 @@ export default function Login() {
     console.log({
       id: data.get('ID'),
       password: data.get('password'),
-    });    
+    });
     
     axios.post(      
       'http://localhost:8080/user/login',
@@ -55,17 +56,16 @@ export default function Login() {
         password: data.get('password')
       },
       //{ withCredentials: true}
-    ).then((res) => {
-      console.log("token : " + res.data);              
-      axios.defaults.headers.common['Authorization'] = `Bearer ${res.data}`;
-      
+    ).then((res) => {      
+      localStorage.setItem('access_token', res.data["access-token"]);
+      localStorage.setItem('refresh_token', res.data["refresh-token"]);
+
       handleClose();
-      history.push("/");
-      
-    }, (error) => {
+      history.push("/");      
+    }
+    , (error) => {
       console.log("got: " + error.response.data);
-      setFailVO({...failVO, "fail": true, "message": error.response.data});
-      
+      setFailVO({...failVO, "fail": true, "message": error.response.data});      
     })    
   };
 
@@ -139,3 +139,4 @@ export default function Login() {
 }
 
 //export default withRouter(Login);
+
