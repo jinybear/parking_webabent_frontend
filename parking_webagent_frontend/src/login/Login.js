@@ -14,10 +14,8 @@ import Checkbox from '@mui/material/Checkbox';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { axiosApiInstance } from '../routes';
-import jwt_decode from "jwt-decode"
+import axios from 'axios';
 
-
-import { NorthWest } from '@mui/icons-material';
 
 function Copyright(props) {
   return (
@@ -51,7 +49,7 @@ export default function Login() {
       password: data.get('password'),
     });
     
-    axiosApiInstance.post(      
+    axios.post(      
       'http://localhost:8080/user/login',
       {
         id: data.get('ID'),
@@ -59,13 +57,11 @@ export default function Login() {
       },
       //{ withCredentials: true}
     ).then((res) => {      
-      //axios.defaults.headers.common['Authorization'] = `Bearer ${res.data["access-token"]}`;      
       localStorage.setItem('access_token', res.data["access-token"]);
       localStorage.setItem('refresh_token', res.data["refresh-token"]);
 
       handleClose();
-      history.push("/");
-      
+      history.push("/");      
     }
     , (error) => {
       console.log("got: " + error.response.data);
