@@ -103,10 +103,11 @@ function MainContent() {
     setOpenLogoutAlarm(true);
   };
 
-  const requestLogout = () => {
+  const requestLogout = () => {   
+
     axios.post(      
       'http://localhost:8080/user/logout'
-    ).then((res) => {
+    ).then((res) => {      
       axios.defaults.headers.common['Authorization'] = "";
       history.push("/login");
       
