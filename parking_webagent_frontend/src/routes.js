@@ -29,15 +29,12 @@ export default function Routes() {
 
     axiosApiInstance.interceptors.response.use(
       (response) => response,
-
       async (error) => {
         const { response, config } = error;
 
-        if (response.status == 403) {
+        if (response.status === 403) {
           let token = localStorage.getItem("refresh_token");
           if (token) {
-            console.log("refresh token : " + token);
-
             axios
               .post("http://localhost:8080/user/refresh", {
                 token: token,
@@ -46,7 +43,7 @@ export default function Routes() {
                 (res) => {
                   console.log("call refresh");
 
-                  if (res.status == 200) {
+                  if (res.status === 200) {
                     localStorage.setItem("access_token", res.data["access-token"]);
                     localStorage.setItem("refresh_token", res.data["refresh-token"]);
 
@@ -69,7 +66,6 @@ export default function Routes() {
             history.push("/login");
           }
         }
-        console.log("pass preResponse");
       }
     );
   };

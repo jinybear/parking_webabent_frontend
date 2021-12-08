@@ -1,6 +1,7 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
+import ListIcon from "@mui/icons-material/List";
 import { Alert, Button, Container, Grid, Paper, Snackbar } from "@mui/material";
 import axios from "axios";
 import { useHistory } from "react-router";
@@ -14,10 +15,9 @@ export default function CreateAccount() {
     setFailVO({ ...failVO, fail: false });
   };
 
-  const state = {
-    password: "",
-    passwordChk: "",
-  };
+  const [password, setPassword] = React.useState("");
+  const [confirmPwd, setConfirmPwd] = React.useState("");
+  const [id, setId] = React.useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -29,24 +29,30 @@ export default function CreateAccount() {
       password: data.get("password"),
     });
 
-    axiosApiInstance
-      .post(
-        "http://localhost:8080/user/add",
-        {
-          id: data.get("id"),
-          password: data.get("password"),
-        }
-        //{ withCredentials: true}
-      )
-      .then(
-        (res) => {
-          alert("계정 생성 성공");
-        },
-        (error) => {
-          console.log("got: " + error.response.data);
-          setFailVO({ ...failVO, fail: true, message: "계정생성에 실패하였습니다" });
-        }
-      );
+    if (id === "" || password === "" || confirmPwd === "") {
+      setFailVO({ ...failVO, fail: true, message: "필수 입력란을 모두 입력하세요" });
+    } else if (password !== confirmPwd) {
+      setFailVO({ ...failVO, fail: true, message: "비밀번호를 확인하세요" });
+    } else {
+      axiosApiInstance
+        .post(
+          "http://localhost:8080/user/add",
+          {
+            id: data.get("id"),
+            password: data.get("password"),
+          }
+          //{ withCredentials: true}
+        )
+        .then(
+          (res) => {
+            alert("계정 생성 성공");
+          },
+          (error) => {
+            console.log("got: " + error.response.data);
+            setFailVO({ ...failVO, fail: true, message: "계정생성에 실패하였습니다" });
+          }
+        );
+    }
   };
 
   return (
@@ -59,49 +65,90 @@ export default function CreateAccount() {
         height: 600,
       }}
     >
-      <Box component='form' onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-        <Snackbar autoHideDuration={3000} anchorOrigin={{ vertical: "top", horizontal: "right" }} open={failVO["fail"]} onClose={handleClose}>
-          <Alert onClose={handleClose} severity='error'>
-            {failVO["message"]}
-          </Alert>
-        </Snackbar>
-        <Container maxWidth='sm'>
-          <Grid container>
-            <Grid item xs={12}>
-              <h2>관리자 계정 생성</h2>
-            </Grid>
-            <Grid item xs={3}>
-              <h4>ID</h4>
-            </Grid>
-            <Grid item xs={9}>
-              <TextField name='id' label='아이디' variant='standard' fullWidth required />
-            </Grid>
-            <Grid item xs={3}>
-              <h4>비밀번호</h4>
-            </Grid>
-            <Grid item xs={9}>
-              <TextField name='password' label='비밀번호' placeholder='7자리이상 입력하세요' type='password' autoComplete='current-password' variant='standard' fullWidth required />
-            </Grid>
-            <Grid item xs={3}>
-              <h4>비밀번호 확인</h4>
-            </Grid>
-            <Grid item xs={9}>
-              <div>
-                <TextField error name='passwordChk' label='비밀번호 확인' type='password' autoComplete='current-password' variant='standard' fullWidth required />
-                <div>패스워드 일치 ㄴㄴ</div>
-              </div>
-            </Grid>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Button startIcon={<ListIcon />} onClick={() => history.push("/accountlist")}></Button>
+        </Grid>
 
-            <Grid item xs={12}>
+        <Grid item xs={12}>
+          <Box component='form' onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            <Snackbar autoHideDuration={3000} anchorOrigin={{ vertical: "top", horizontal: "right" }} open={failVO["fail"]} onClose={handleClose}>
+              <Alert onClose={handleClose} severity='error'>
+                {failVO["message"]}
+              </Alert>
+            </Snackbar>
+            <Container maxWidth='sm'>
+              <Grid container>
+                <Grid item xs={12}>
+                  <h2>관리자 계정 생성</h2>
+                </Grid>
+                <Grid item xs={3}>
+                  <h4>ID</h4>
+                </Grid>
+                <Grid item xs={9}>
+                  <TextField
+                    name='id'
+                    label='아이디'
+                    onChange={(e) => {
+                      setId(e.target.value);
+                    }}
+                    variant='standard'
+                    fullWidth
+                    required
+                  />
+                </Grid>
+                <Grid item xs={3}>
+                  <h4>비밀번호</h4>
+                </Grid>
+                <Grid item xs={9}>
+                  <TextField
+                    name='password'
+                    label='비밀번호'
+                    placeholder='7자리이상 입력하세요'
+                    type='password'
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                    }}
+                    autoComplete='current-password'
+                    variant='standard'
+                    fullWidth
+                    required
+                  />
+                </Grid>
+                <Grid item xs={3}>
+                  <h4>비밀번호 확인</h4>
+                </Grid>
+                <Grid item xs={9}>
+                  <div>
+                    <TextField
+                      error={password !== confirmPwd}
+                      helperText={password !== confirmPwd ? "비밀번호가 일치하지 않습니다" : " "}
+                      name='passwordChk'
+                      label='비밀번호 확인'
+                      type='password'
+                      autoComplete='current-password'
+                      onChange={(e) => {
+                        setConfirmPwd(e.target.value);
+                      }}
+                      variant='standard'
+                      fullWidth
+                      required
+                    />
+                  </div>
+                </Grid>
+
+                {/* <Grid item xs={12}>
               <h3>권한설정</h3>
-            </Grid>
-            <Grid item xs={12}></Grid>
-          </Grid>
-          <Button type='submit' variant='contained'>
-            계정 만들기
-          </Button>
-        </Container>
-      </Box>
+            </Grid> */}
+                <Grid item xs={12}></Grid>
+              </Grid>
+              <Button type='submit' variant='contained'>
+                계정 만들기
+              </Button>
+            </Container>
+          </Box>
+        </Grid>
+      </Grid>
     </Paper>
   );
 }
