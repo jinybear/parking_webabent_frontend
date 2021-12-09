@@ -7,9 +7,12 @@ import axios from "axios";
 import { useHistory } from "react-router";
 import { axiosApiInstance } from "../routes";
 
-export default function CreateAccount() {
+export default function CreateAccount(props) {
+  const data = props.location.state;
   const [failVO, setFailVO] = React.useState({ fail: false, message: "" });
   const history = useHistory();
+
+  console.log(data);
 
   const handleClose = () => {
     setFailVO({ ...failVO, fail: false });
@@ -46,6 +49,7 @@ export default function CreateAccount() {
         .then(
           (res) => {
             alert("계정 생성 성공");
+            history.push("/accountlist");
           },
           (error) => {
             console.log("got: " + error.response.data);

@@ -65,6 +65,8 @@ export default function Routes() {
           } else {
             history.push("/login");
           }
+        } else {
+          throw error;
         }
       }
     );

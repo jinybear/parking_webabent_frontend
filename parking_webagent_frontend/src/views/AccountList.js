@@ -24,9 +24,11 @@ export default function DataTable() {
   React.useEffect(() => {
     axiosApiInstance.post("http://localhost:8080/user/getAccountList").then(
       (res) => {
-        // console.log(res);
-        // console.log(res.data);
-        //console.log(data[0]);
+        // 이거 좀 문제========
+        if (res.data === "") {
+          return;
+        }
+        //=============
         res.data.forEach((d) => {
           if (d.locked === false) {
             d.locked = "-";
@@ -34,7 +36,6 @@ export default function DataTable() {
             d.locked = "잠금";
           }
         });
-        console.log(res.data);
         setData(res.data);
       },
       (error) => {
@@ -43,7 +44,29 @@ export default function DataTable() {
     );
   }, []);
 
-  console.log(selectionModel);
+  const handlePurge = (selectNum) => {
+    //console.log("데이타" + data);
+
+    const res = data.filter((x) => !selectNum.includes(x.id));
+
+    console.log("필터된거" + res);
+
+    setData(res);
+  };
+
+  const deleteHandle = () => {
+    axiosApiInstance.post("http://localhost:8080/user/deleteAccount", { ids: selectionModel }).then(
+      (res) => {
+        console.log(res);
+        alert("삭제성공");
+        handlePurge(selectionModel);
+        //history.push("/accountlist");
+      },
+      (error) => {
+        console.log("got: " + error.response);
+      }
+    );
+  };
 
   return (
     <Paper
@@ -58,10 +81,19 @@ export default function DataTable() {
       <Container maxWidth='sm'>
         <h3>관리자 계정 리스트</h3>
         <Stack direction='row' spacing={2} padding='20px'>
-          <Button variant='contained' startIcon={<AddIcon />} onClick={() => history.push("/createaccount")}>
+          <Button
+            variant='contained'
+            startIcon={<AddIcon />}
+            onClick={() =>
+              history.push({
+                pathname: "/createaccount",
+                state: data,
+              })
+            }
+          >
             계정추가
           </Button>
-          <Button variant='outlined' startIcon={<DeleteIcon />}>
+          <Button variant='outlined' startIcon={<DeleteIcon />} onClick={deleteHandle}>
             삭제
           </Button>
           <Button variant='outlined' color='error' startIcon={<LockOpenIcon />}>
@@ -77,6 +109,7 @@ export default function DataTable() {
             checkboxSelection
             onSelectionModelChange={(newSelectionModel) => {
               setSelectionModel(newSelectionModel);
+              //handlePurge(newSelectionModel);
             }}
             selectionModel={selectionModel}
             {...data}
