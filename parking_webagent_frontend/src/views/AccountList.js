@@ -1,6 +1,6 @@
 import * as React from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { Button, Container, Paper, Stack } from "@mui/material";
+import { Alert, Button, Container, Paper, Snackbar, Stack } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
@@ -20,6 +20,11 @@ export default function DataTable() {
 
   let [data, setData] = React.useState([]); //table data
   const [selectionModel, setSelectionModel] = React.useState([]); //table selection
+  const [failVO, setFailVO] = React.useState({ fail: false, message: "" });
+
+  const handleClose = () => {
+    setFailVO({ ...failVO, fail: false });
+  };
 
   React.useEffect(() => {
     axiosApiInstance.post("http://localhost:8080/user/getAccountList").then(
@@ -45,27 +50,28 @@ export default function DataTable() {
   }, []);
 
   const handlePurge = (selectNum) => {
-    //console.log("데이타" + data);
-
     const res = data.filter((x) => !selectNum.includes(x.id));
-
-    console.log("필터된거" + res);
-
+    //console.log("필터된거" + res);
     setData(res);
   };
 
   const deleteHandle = () => {
-    axiosApiInstance.post("http://localhost:8080/user/deleteAccount", { ids: selectionModel }).then(
-      (res) => {
-        console.log(res);
-        alert("삭제성공");
-        handlePurge(selectionModel);
-        //history.push("/accountlist");
-      },
-      (error) => {
-        console.log("got: " + error.response);
-      }
-    );
+    if (selectionModel.length === 0) {
+      setFailVO({ ...failVO, fail: true, message: "삭제할 계정을 선택하세요" });
+    } else {
+      axiosApiInstance.post("http://localhost:8080/user/deleteAccount", { ids: selectionModel }).then(
+        (res) => {
+          console.log(res);
+          alert("삭제성공");
+          handlePurge(selectionModel);
+          //history.push("/accountlist");
+        },
+        (error) => {
+          console.log("got: " + error.response);
+          setFailVO({ ...failVO, fail: true, message: "삭제실패" });
+        }
+      );
+    }
   };
 
   return (
@@ -78,6 +84,11 @@ export default function DataTable() {
         height: 700,
       }}
     >
+      <Snackbar autoHideDuration={3000} anchorOrigin={{ vertical: "top", horizontal: "right" }} open={failVO["fail"]} onClose={handleClose}>
+        <Alert onClose={handleClose} severity='error'>
+          {failVO["message"]}
+        </Alert>
+      </Snackbar>
       <Container maxWidth='sm'>
         <h3>관리자 계정 리스트</h3>
         <Stack direction='row' spacing={2} padding='20px'>

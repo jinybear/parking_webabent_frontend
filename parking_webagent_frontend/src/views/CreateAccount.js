@@ -8,19 +8,25 @@ import { useHistory } from "react-router";
 import { axiosApiInstance } from "../routes";
 
 export default function CreateAccount(props) {
-  const data = props.location.state;
+  const userList = props.location.state;
+  const useridList = userList.map((m) => m.userid);
   const [failVO, setFailVO] = React.useState({ fail: false, message: "" });
   const history = useHistory();
+  const [password, setPassword] = React.useState("");
+  const [confirmPwd, setConfirmPwd] = React.useState("");
+  const [id, setId] = React.useState("");
+  const [duplacated, setDuplacated] = React.useState(false);
 
-  console.log(data);
+  //console.log(useridList);
 
   const handleClose = () => {
     setFailVO({ ...failVO, fail: false });
   };
 
-  const [password, setPassword] = React.useState("");
-  const [confirmPwd, setConfirmPwd] = React.useState("");
-  const [id, setId] = React.useState("");
+  const idDupliChk = (val) => {
+    //console.log(useridList.includes(val));
+    setDuplacated(useridList.includes(val));
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -36,6 +42,8 @@ export default function CreateAccount(props) {
       setFailVO({ ...failVO, fail: true, message: "필수 입력란을 모두 입력하세요" });
     } else if (password !== confirmPwd) {
       setFailVO({ ...failVO, fail: true, message: "비밀번호를 확인하세요" });
+    } else if (duplacated) {
+      setFailVO({ ...failVO, fail: true, message: "중복된 아이디가 있습니다" });
     } else {
       axiosApiInstance
         .post(
@@ -93,8 +101,11 @@ export default function CreateAccount(props) {
                   <TextField
                     name='id'
                     label='아이디'
+                    error={duplacated}
+                    helperText={duplacated ? "중복된 아이디입니다" : ""}
                     onChange={(e) => {
                       setId(e.target.value);
+                      idDupliChk(e.target.value);
                     }}
                     variant='standard'
                     fullWidth
