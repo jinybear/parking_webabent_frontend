@@ -14,11 +14,13 @@ import CommentIcon from '@mui/icons-material/Comment';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import VideocamIcon from '@mui/icons-material/Videocam';
-import { ExpandLess, ExpandMore, HeadsetMicSharp } from '@mui/icons-material';
+import { ExpandLess, ExpandMore, HeadsetMicSharp, SystemSecurityUpdate } from '@mui/icons-material';
 import { useHistory } from 'react-router';
+import { axiosApiInstance } from '../routes';
 
-export default function MainListItems(props) {  
-  const [liveOpen, setLiveOpen] = React.useState(true);
+export default function MainListItems(props) {
+  const [liveOpen, setLiveOpen] = React.useState(false);
+  const [test, setTest] = React.useState({});
 
   const history = useHistory();
 
@@ -33,16 +35,57 @@ export default function MainListItems(props) {
   const handleMenuClick = (title) => {
     setTitle(title);
 
-    if (title === "라이브"){
+    if (title === "라이브") {
       setLiveOpen(!liveOpen);
-      history.push("/settingpage");
-    } else if(title == "대쉬보드") {
-      history.push("/dashboardpage");  
-    } 
+      //history.push("/settingpage");
+      try {
+        axiosApiInstance.post(
+          'http://localhost:8080/live'
+        ).then((response) => {
+          if (response.data === "") {
+            return;
+          }
 
+          const res = [...response.data];
+          console.log(res);
+
+          const liveMenu = () => {
+            let obj = {};
+
+            for (let i = 0; i < res.length; i++) {
+              let _areaId = res[i].areaId;
+              if (_areaId in obj) {
+                obj[_areaId] = [...obj[_areaId], res[i].source_desc];
+              } else {
+                obj[_areaId] = [res[i].source_desc];
+              }
+            }
+            setTest({ ...test, ...obj });
+            // let aaa = [];
+            // for(const key in obj){
+            //   aaa.push({"areaId":key, "source_desc":obj[key]})
+            // }
+          }
+          liveMenu();
+
+        })
+      } catch (e) {
+        console.log(e);
+      }
+      //React.fetchData();
+    } else if (title == "대쉬보드") {
+      history.push("/dashboardpage");
+    }
   }
 
-  
+  /*const [areaList, setAreaList] = React.useState([
+    {
+      area_id: areaList.area_id,
+      source_id: areaList.source_id,
+      source_desc: areaList.source_desc
+    }
+  ])*/
+
   // const renderParking = () => {
   //   const arr = [{ name: "A주차장", child: ["1번camera", "2번camera", "3번camera"]},
   //             { name: "B주차장", child: ["4번camera", "5번camera", "3번camera"]}
@@ -51,7 +94,7 @@ export default function MainListItems(props) {
   //   const result = [];
   //   result.push(<Collapse in={liveOpen} timeout="auto" unmountOnExit>);
   //   result.push(<List component="div" disablePadding>);
-  
+
   //   {arr.map((data, index) => (
   //     <List component="div" disablePadding>
   //       <ListItemButton sx={{ pl: 4}}>
@@ -59,9 +102,9 @@ export default function MainListItems(props) {
   //       </ListItemButton >
   //     </List>
   //   ))}
-    
+
   //   result.push(</List></Collapse>);
-    
+
   //   result.push(<Collapse in={true} timeout="auto" unmountOnExit>);
   //   result.push(<List component="div" disablePadding>);
 
@@ -78,16 +121,16 @@ export default function MainListItems(props) {
   //   return result;
   // };
 
-  
+
   return (
     <List>
-      <ListItem button onClick={() => {handleMenuClick("대쉬보드");}} >
+      <ListItem button onClick={() => { handleMenuClick("대쉬보드"); }} >
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
         <ListItemText primary="대쉬보드" />
       </ListItem>
-      <ListItem button onClick={() => {handleMenuClick("라이브");}}>
+      <ListItem button onClick={() => { handleMenuClick("라이브"); }}>
         <ListItemIcon >
           <VideocamIcon />
         </ListItemIcon>
@@ -96,44 +139,44 @@ export default function MainListItems(props) {
       </ListItem>
       <Collapse in={liveOpen} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4}}>
-            <ListItemText primaryTypographyProps={{fontSize: '0.9rem'}} primary="A주차장" />            
-          </ListItemButton>
-          <Collapse in={true} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItemButton sx={{ pl: 8}}>
-                <ListItemText primaryTypographyProps={{fontSize: '0.8rem'}} primary="A주차장-1번 camera" />
-              </ListItemButton>
-              <ListItemButton sx={{ pl: 8}}>
-                <ListItemText primaryTypographyProps={{fontSize: '0.8rem'}} primary="A주차장-2번 camera" />
-              </ListItemButton>
-            </List>
-          </Collapse>
-          <ListItemButton sx={{ pl: 4}}>
-            <ListItemText primaryTypographyProps={{fontSize: '0.9rem'}} primary="B주차장" />            
-          </ListItemButton>
-          <Collapse in={true} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItemButton sx={{ pl: 8}}>
-                <ListItemText primaryTypographyProps={{fontSize: '0.8rem'}} primary="B주차장-1번 camera" />
-              </ListItemButton>
-              <ListItemButton sx={{ pl: 8}}>
-                <ListItemText primaryTypographyProps={{fontSize: '0.8rem'}} primary="B주차장-2번 camera" />
-              </ListItemButton>
-            </List>
-          </Collapse>
+          {
+            Object.keys(test).map((key) => (
+              <>
+                <ListItemButton sx={{ pl: 10 }} onClick={() => {history.push({
+                  pathname:"/parkingLotPage", 
+                  state:key
+                })
+                  }}>
+                  <ListItemText primaryTypographyProps={{ fontSize: '0.9rem' }} primary={key} ></ListItemText>
+                </ListItemButton>
+                <Collapse in={true} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    {test[key].map((source) => (
+                      <ListItemButton sx={{ pl: 12 }} onClick={() => {history.push({
+                        pathname:"/dashboardpage",
+                        state:source
+                      })
+                    }}>
+                        <ListItemText primaryTypographyProps={{ fontSize: '0.8rem' }} primary={source} />
+                      </ListItemButton>
+                    ))}
+                  </List>
+                </Collapse>
+              </>
+            ))
+          }
         </List>
       </Collapse>
-      
 
-      <ListItem button onClick={() => {handleMenuClick("통계");}}>
+
+      <ListItem button onClick={() => { handleMenuClick("통계"); }}>
         <ListItemIcon >
           <BarChartIcon />
         </ListItemIcon>
         <ListItemText primary="통계" />
       </ListItem>
-      
-      <ListItem button onClick={() => {handleMenuClick("공지사항");}}>
+
+      <ListItem button onClick={() => { handleMenuClick("공지사항"); }}>
         <ListItemIcon >
           <CommentIcon />
         </ListItemIcon>
@@ -143,15 +186,15 @@ export default function MainListItems(props) {
   );
 }
 
-  
+
 export const secondaryListItems = (
-<div>
+  <div>
     <ListSubheader inset>관리자 메뉴</ListSubheader>
     <ListItem button >
-        <ListItemIcon>          
-          <SettingsIcon />
-        </ListItemIcon>
-        <ListItemText primary="설정" />
-      </ListItem>
-</div>
+      <ListItemIcon>
+        <SettingsIcon />
+      </ListItemIcon>
+      <ListItemText primary="설정" />
+    </ListItem>
+  </div>
 );

@@ -99,14 +99,14 @@ function MainContent() {
     setOpen(!open);
   };
 
-  const [openLogoutAlarm, setOpenLogoutAlarm] = React.useState(false);
+  const [openLogoutAlarm, setOpenLogoutAlarm] = React.useState(true);
   
   const handleLogout = () => {    
     setOpenLogoutAlarm(true);
   };
 
   const requestLogout = () => {
-    axiosApiInstance.post(      
+    axiosApiInstance.post(
       'http://localhost:8080/user/logout'
     ).then((res) => {
       history.push("/login");

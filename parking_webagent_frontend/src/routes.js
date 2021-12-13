@@ -9,7 +9,7 @@ export default function Routes() {
   // let isAuthorized = sessionStorage.getItem("isAuthorized");
 
   const history = useHistory();
-  history.push("/login");
+  history.push("/");
 
   const implementaionCustomAxios = () => {    
     axiosApiInstance.interceptors.request.use(
