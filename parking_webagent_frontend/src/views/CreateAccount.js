@@ -32,12 +32,6 @@ export default function CreateAccount(props) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    // eslint-disable-next-line no-console
-    console.log({
-      id: data.get("id"),
-      password: data.get("password"),
-    });
-
     if (id === "" || password === "" || confirmPwd === "") {
       setFailVO({ ...failVO, fail: true, message: "필수 입력란을 모두 입력하세요" });
     } else if (password !== confirmPwd) {

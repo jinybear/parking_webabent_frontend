@@ -27,6 +27,10 @@ export default function DataTable() {
   };
 
   React.useEffect(() => {
+    handleData();
+  }, []);
+
+  const handleData = () => {
     axiosApiInstance.post("http://localhost:8080/user/getAccountList").then(
       (res) => {
         // 이거 좀 문제========
@@ -41,13 +45,14 @@ export default function DataTable() {
             d.locked = "잠금";
           }
         });
+
         setData(res.data);
       },
       (error) => {
         console.log("got: " + error.response);
       }
     );
-  }, []);
+  };
 
   const handlePurge = (selectNum) => {
     const res = data.filter((x) => !selectNum.includes(x.id));
@@ -61,18 +66,48 @@ export default function DataTable() {
     } else {
       axiosApiInstance.post("http://localhost:8080/user/deleteAccount", { ids: selectionModel }).then(
         (res) => {
-          console.log(res);
+          //console.log(res);
           alert("삭제성공");
           handlePurge(selectionModel);
-          //history.push("/accountlist");
         },
         (error) => {
-          console.log("got: " + error.response);
+          //console.log("got: " + error.response);
           setFailVO({ ...failVO, fail: true, message: "삭제실패" });
         }
       );
     }
   };
+
+  const lockCheck = () => {
+    return data
+      .filter((x) => selectionModel.includes(x.id))
+      .map((v) => v.locked)
+      .includes("-");
+  };
+
+  const unlockHandle = () => {
+    console.log(lockCheck());
+    if (selectionModel.length === 0) {
+      setFailVO({ ...failVO, fail: true, message: "잠금해제할 계정을 선택하세요" });
+    } else if (lockCheck) {
+      setFailVO({ ...failVO, fail: true, message: "잠겨있는 계정을 선택하세요" });
+    } else {
+      axiosApiInstance.post("http://localhost:8080/user/unlockAccount", { ids: selectionModel }).then(
+        (res) => {
+          //console.log(res);
+          alert("잠금해제 성공");
+          handleData();
+          //history.push("/accountlist");
+        },
+        (error) => {
+          console.log("got: " + error.response);
+          setFailVO({ ...failVO, fail: true, message: "잠금해제 실패" });
+        }
+      );
+    }
+  };
+
+  console.log();
 
   return (
     <Paper
@@ -107,7 +142,7 @@ export default function DataTable() {
           <Button variant='outlined' startIcon={<DeleteIcon />} onClick={deleteHandle}>
             삭제
           </Button>
-          <Button variant='outlined' color='error' startIcon={<LockOpenIcon />}>
+          <Button variant='outlined' color='error' startIcon={<LockOpenIcon />} onClick={unlockHandle}>
             잠금해제
           </Button>
         </Stack>
