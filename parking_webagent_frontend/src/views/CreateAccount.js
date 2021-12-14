@@ -17,14 +17,11 @@ export default function CreateAccount(props) {
   const [id, setId] = React.useState("");
   const [duplacated, setDuplacated] = React.useState(false);
 
-  //console.log(useridList);
-
   const handleClose = () => {
     setFailVO({ ...failVO, fail: false });
   };
 
   const idDupliChk = (val) => {
-    //console.log(useridList.includes(val));
     setDuplacated(useridList.includes(val));
   };
 

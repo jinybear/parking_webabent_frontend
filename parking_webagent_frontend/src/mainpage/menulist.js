@@ -20,6 +20,15 @@ export default function MainListItems(props) {
   const [liveOpen, setLiveOpen] = React.useState(true);
   const [settingOpen, setSettingOpen] = React.useState(true);
 
+  const superadminChk = () => {
+    if (props.userinfo.roleContext === "ROLE_SUPERADMIN") {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  //console.log(superadminChk());
+
   const history = useHistory();
 
   const liveClick = () => {
@@ -177,7 +186,7 @@ export default function MainListItems(props) {
           <Collapse in={true} timeout='auto' unmountOnExit>
             <List component='div' disablePadding>
               <ListItemButton sx={{ pl: 8 }}>
-                <ListItemText primaryTypographyProps={{ fontSize: "0.8rem" }} primary='관리자 계정 관리' onClick={() => history.push("/accountlist")} />
+                {superadminChk() && <ListItemText primaryTypographyProps={{ fontSize: "0.8rem" }} primary='관리자 계정 관리' onClick={() => history.push("/accountlist")} />}
               </ListItemButton>
             </List>
           </Collapse>

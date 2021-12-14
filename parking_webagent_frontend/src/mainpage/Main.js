@@ -22,6 +22,7 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { secondaryListItems } from "./menulist";
 import MainListItems from "./menulist";
+import jwt_decode from "jwt-decode";
 
 import Chart from "../util/chart/Chart";
 import axios from "axios";
@@ -89,6 +90,13 @@ const mdTheme = createTheme();
 function MainContent() {
   const [open, setOpen] = React.useState(true);
   const [title, setTitle] = React.useState("대쉬보드");
+
+  const token = localStorage.getItem("access_token");
+  const decoded = jwt_decode(token);
+  const userInfo = {
+    roleContext: decoded.role,
+    useridContext: decoded.userid,
+  };
 
   const history = useHistory();
   const toggleDrawer = () => {
@@ -160,7 +168,7 @@ function MainContent() {
             </IconButton>
           </Toolbar>
           <Divider />
-          <MainListItems setTitle={setTitle} />
+          <MainListItems setTitle={setTitle} userinfo={userInfo} />
 
           <Divider />
         </Drawer>
@@ -175,7 +183,7 @@ function MainContent() {
         >
           <Toolbar />
           <Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
-            <MainRoutes />
+            <MainRoutes userinfo={userInfo} />
             <Copyright sx={{ pt: 4 }} />
           </Container>
         </Box>

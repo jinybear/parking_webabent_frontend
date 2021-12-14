@@ -15,7 +15,7 @@ const columns = [
   { field: "locked", headerName: "계정상태", width: 130 },
 ];
 
-export default function DataTable() {
+export default function DataTable(props) {
   const history = useHistory();
 
   let [data, setData] = React.useState([]); //table data
@@ -30,14 +30,17 @@ export default function DataTable() {
     handleData();
   }, []);
 
+  //backend에 리스트 가져오기 요청
   const handleData = () => {
     axiosApiInstance.post("http://localhost:8080/user/getAccountList").then(
       (res) => {
         // 이거 좀 문제========
-        if (res.data === "") {
+        if (res.data === null) {
           return;
         }
         //=============
+
+        //console.log(res);
         res.data.forEach((d) => {
           if (d.locked === false) {
             d.locked = "-";
@@ -46,7 +49,8 @@ export default function DataTable() {
           }
         });
 
-        setData(res.data);
+        const result = res.data.filter((user) => user.userid !== props.userinfo.useridContext);
+        setData(result);
       },
       (error) => {
         console.log("got: " + error.response);
@@ -54,12 +58,14 @@ export default function DataTable() {
     );
   };
 
-  const handlePurge = (selectNum) => {
-    const res = data.filter((x) => !selectNum.includes(x.id));
+  //화면에서 선택된 계정 지우기(화면에서만 삭제)
+  const handlePurge = () => {
+    const res = data.filter((x) => !selectionModel.includes(x.id));
     //console.log("필터된거" + res);
     setData(res);
   };
 
+  //backend에 계정삭제 요청
   const deleteHandle = () => {
     if (selectionModel.length === 0) {
       setFailVO({ ...failVO, fail: true, message: "삭제할 계정을 선택하세요" });
@@ -68,7 +74,7 @@ export default function DataTable() {
         (res) => {
           //console.log(res);
           alert("삭제성공");
-          handlePurge(selectionModel);
+          handlePurge();
         },
         (error) => {
           //console.log("got: " + error.response);
@@ -78,6 +84,7 @@ export default function DataTable() {
     }
   };
 
+  //체크한 계정의 잠금상태확인(잠겨있지않은 계정 선택되었을시 true 반환)
   const lockCheck = () => {
     return data
       .filter((x) => selectionModel.includes(x.id))
@@ -85,17 +92,18 @@ export default function DataTable() {
       .includes("-");
   };
 
+  //backend에 잠금해제 요청
   const unlockHandle = () => {
-    console.log(lockCheck());
+    //console.log(lockCheck());
     if (selectionModel.length === 0) {
       setFailVO({ ...failVO, fail: true, message: "잠금해제할 계정을 선택하세요" });
-    } else if (lockCheck) {
+    } else if (lockCheck()) {
       setFailVO({ ...failVO, fail: true, message: "잠겨있는 계정을 선택하세요" });
     } else {
       axiosApiInstance.post("http://localhost:8080/user/unlockAccount", { ids: selectionModel }).then(
         (res) => {
-          //console.log(res);
           alert("잠금해제 성공");
+          //backend에 다시 리스트 요청
           handleData();
           //history.push("/accountlist");
         },
@@ -106,8 +114,6 @@ export default function DataTable() {
       );
     }
   };
-
-  console.log();
 
   return (
     <Paper
@@ -155,7 +161,6 @@ export default function DataTable() {
             checkboxSelection
             onSelectionModelChange={(newSelectionModel) => {
               setSelectionModel(newSelectionModel);
-              //handlePurge(newSelectionModel);
             }}
             selectionModel={selectionModel}
             {...data}
