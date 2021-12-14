@@ -28,6 +28,7 @@ import axios from 'axios';
 import { axiosApiInstance } from '../routes';
 import AlertDialog from '../util/Dialog/AlertDialog';
 import MainRoutes from '../MainRoutes';
+import ServerPaginationGrid from '../util/Table/ServerPaginationGrid';
 // import Deposits from './Deposits';
 // import Orders from './Orders';
 
@@ -90,9 +91,15 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const mdTheme = createTheme();
 
-function MainContent() {  
+export default function MainContent(props) {  
   const [open, setOpen] = React.useState(true);
   const [title, setTitle] = React.useState("");
+  const [userId, setUserId] = React.useState("");  
+
+  React.useEffect(() => {
+    console.log("got you" + props.location.userId);
+    setUserId(props.location.userId);    
+  }, [props.user])
 
   const history = useHistory();
   const toggleDrawer = () => {
@@ -150,7 +157,7 @@ function MainContent() {
             </Typography>            
             
             <AccountBoxIcon style={{margin: '5px'}} />
-              백승진            
+            {userId}
             <IconButton onClick={handleLogout} color = "inherit" title="logout">
               <LogoutIcon style={{marginLeft: '25px'}} />
             </IconButton>
@@ -226,6 +233,7 @@ function MainContent() {
               </Grid>
             </Grid>
             <Copyright sx={{ pt: 4 }} />
+            <ServerPaginationGrid apiUrl='http://localhost:8080/systems/log'/>
             <MainRoutes/>
           </Container>
           
@@ -237,6 +245,6 @@ function MainContent() {
   );
 }
 
-export default function Main() {
-  return <MainContent />;
-}
+// export default function Main() {
+//   return <MainContent />;
+// }

@@ -4,6 +4,7 @@ import Login from "./login/Login"
 import Main from "./mainpage/Main"
 import axios from 'axios';
 import { LineAxisOutlined } from "@mui/icons-material";
+import MainContent from "./mainpage/Main";
 
 export default function Routes() {
   // let isAuthorized = sessionStorage.getItem("isAuthorized");
@@ -13,8 +14,8 @@ export default function Routes() {
 
   const implementaionCustomAxios = () => {    
     axiosApiInstance.interceptors.request.use(
-      async config => {      
-        const accessToken = localStorage.getItem('access_token');
+      async config => {     
+        const accessToken = sessionStorage.getItem('access-token');
         if (accessToken){
           console.log('access-token : ' + accessToken);
 
@@ -35,7 +36,7 @@ export default function Routes() {
         const { response, config } = error;        
         
         if(response.status == 403) {
-          let token = localStorage.getItem('refresh_token');
+          let token = sessionStorage.getItem('refresh-token');
           if (token){
             console.log('refresh token : ' + token);
             
@@ -48,8 +49,8 @@ export default function Routes() {
               console.log("call refresh");
 
               if (res.status == 200) {                
-                localStorage.setItem('access_token', res.data["access-token"]);
-                localStorage.setItem('refresh_token', res.data["refresh-token"]);
+                sessionStorage.setItem('access-token', res.data["access-token"]);
+                sessionStorage.setItem('refresh-token', res.data["refresh-token"]);
 
                 config.headers = { 
                   'Authorization': `Bearer ${res.data['access-token']}`,
@@ -60,16 +61,15 @@ export default function Routes() {
               } else {                
                 history.push("/login");
               }
-
             }, (error) => {
               history.push("/login");
-              Promise.reject(error);
+              
             })
           } else {
             history.push("/login");            
           }
-        }         
-        console.log("pass preResponse");
+        }     
+        Promise.reject(error);    
       }
     );
   }
@@ -80,7 +80,7 @@ export default function Routes() {
     <div>
       <Switch>
           <Route path="/login" component={Login} />
-          <Route path="/" component={Main} />
+          <Route path="/" component={MainContent} />
       </Switch>
     </div>
   );
