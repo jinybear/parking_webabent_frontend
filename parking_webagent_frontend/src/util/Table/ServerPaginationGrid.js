@@ -2,6 +2,7 @@ import * as React from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { axiosApiInstance } from '../../routes';
 import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 
@@ -20,9 +21,8 @@ function loadServerRows(apiUrl, page, size) {
   })
 }
 
-export default function ServerPaginationGrid({ apiUrl }) {  
-  const sizes = [10, 20, 50, 80];
-
+export default function ServerPaginationGrid({ apiUrl, columns }) {  
+  const sizes = [10, 20, 50, 80];  
   const [pageData, setPageData] = React.useState({
     'url': apiUrl,
     'page': 0,
@@ -47,33 +47,21 @@ export default function ServerPaginationGrid({ apiUrl }) {
       
       if (!active) {
         return;
-      }
-
-      if(res.content) {
-        let columns = [];
-        for(let key in res.content[0]) {          
-          let flex = 0.15;
-          if (key == 'description') {
-            flex = 0.6;
-          } else if (key in ["id", "level"]) {
-            flex = 0.05;
-          }
-
-          columns.push({
-            field: key,
-            flex: flex,
-            headerClassName:'super-app', 
-            headerName: key.toUpperCase(), 
-            headerAlign: 'center', 
-            editable: true, 
-            });
+      }      
+      
+      const columns1 = columns.map((column) => {
+        return {          
+          field: column.field,
+          flex: column.flex,
+          headerName: column.headerName,
+          headerClassName: 'super-app',
+          headerAlign: 'center',
+          editable: true          
         }
+      });
 
-        setData({...data, 'columns': columns, 'rows':res.content, 'totalCount': res.totalElements})
-        
-        console.log(res.content);
-        setLoading(false);
-      }
+      setLoading(false);
+      setData({...data, 'columns': columns1, 'rows': res.content, 'totalCount': res.totalElements});      
     })();
 
     return () => {
@@ -87,7 +75,15 @@ export default function ServerPaginationGrid({ apiUrl }) {
   }
 
   return (
-    <>
+    
+    <Paper
+        sx={{
+          p: 2,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+    
       <Box
         component="form"
         sx={{
@@ -95,7 +91,12 @@ export default function ServerPaginationGrid({ apiUrl }) {
         }}
         noValidate
         autoComplete="off">       
-          <TextField select label='select' value={currency} onChange={handleChange}>
+          <TextField             
+            select 
+            label='한번에 표시할 수량' 
+            value={currency} onChange={handleChange}
+            variant="filled"
+          >
           {sizes.map((option) => (
                 <MenuItem key={option} value={option}>
                   {option}
@@ -109,9 +110,10 @@ export default function ServerPaginationGrid({ apiUrl }) {
               color: 'white',
             },
           }}>
-        <div style={{ height: 400, width: '100%' }}>
+        <div style={{ height: 700, width: '100%' }}>
           <DataGrid 
             //checkboxSelection
+            rowHeight={30}
             disableSelectionOnClick
             rowsPerPageOptions={[]}          
             rows={data.rows}
@@ -122,23 +124,54 @@ export default function ServerPaginationGrid({ apiUrl }) {
             rowCount={data.totalCount}
             paginationMode="server"
             onPageChange={(newPage) =>  setPageData({...pageData, 'page':newPage})}
-            loading={loading}
+            // loading={loading}
           />
         </div>
       </Box>
-    </>
+    </Paper>
   );
 }
 
 
+
+
 /**
- * 해당 component 사용시 column 과 각 column 별 너비 비율을 넣어줘야 하며 아래 예제 참조
- * [{
-            field: key,
-            flex: flex,
-            headerClassName:'super-app', 
-            headerName: key.toUpperCase(), 
-            headerAlign: 'center', 
-            editable: true, 
-            }] 
- */
+ * 해당 component 사용시 column 과 각 column 별 너비 비율을 넣어줘야 한다. 아래 예제('log' domain 기준) 참조
+ * 
+const params = {
+   "apiUri": 'http://localhost:8080/systems/log', 
+   "columns": [
+    {
+      field: "id",          // database table column과 매칭할 속성
+      flex: 0.05,            // 너비 비율 (0.0~1.0) 
+      headerName: "아이디"  // UI 상에 표출할 column 이름
+   },
+   {
+      field: "level",
+      flex: 0.05,
+      headerName: "레벨"
+   },
+   {
+      field: "description",
+      flex: 0.6,
+      headerName: "설명"
+   },
+   {
+      field: "srcIpaddress",
+      flex: 0.15,
+      headerName: "출처"
+   },
+   {
+      field: "createdAt",
+      flex: 0.15,
+      headerName: "생성시간"
+   }  
+  ]
+}
+
+return (
+  <div>
+    <ServerPaginationGrid {...params} />
+  </div>
+)
+*/

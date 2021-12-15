@@ -61,14 +61,10 @@ export default function Login() {
       //{ withCredentials: true}
     ).then((res) => {            
 
-      sessionStorage.setItem('access-token', res.data["access-token"]);
-      sessionStorage.setItem('refresh-token', res.data["refresh-token"]);
-      // localStorage.setItem('access-token', res.data["access-token"]);
-      // localStorage.setItem('refresh-token', res.data["refresh-token"]);
+      sessionStorage.setItem('access_token', res.data["access_token"]);
+      sessionStorage.setItem('refresh_token', res.data["refresh_token"]);
 
       handleClose();
-
-      console.log(data.get('ID'));
 
       history.push({
         pathname: "/", 
@@ -76,7 +72,6 @@ export default function Login() {
       });      
     }
     , (error) => {
-      console.log("got: " + error.response.data);
       setFailVO({...failVO, "fail": true, "message": error.response.data});      
     })    
   };

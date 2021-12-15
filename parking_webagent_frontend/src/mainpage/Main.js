@@ -11,26 +11,21 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { secondaryListItems } from './menulist';
 import MainListItems from './menulist';
-
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
 import Chart from '../util/chart/Chart';
-import axios from 'axios';
 import { axiosApiInstance } from '../routes';
 import AlertDialog from '../util/Dialog/AlertDialog';
 import MainRoutes from '../MainRoutes';
 import ServerPaginationGrid from '../util/Table/ServerPaginationGrid';
-// import Deposits from './Deposits';
-// import Orders from './Orders';
+import jwt_decode from "jwt-decode";
 
 function Copyright(props) {
   return (
@@ -95,9 +90,17 @@ export default function MainContent(props) {
   const [open, setOpen] = React.useState(true);
   const [title, setTitle] = React.useState("");
   const [userId, setUserId] = React.useState("");  
+  
+  const token = sessionStorage.getItem("access_token");
+  console.log(token);
+  const decoded = jwt_decode(token);
+  const userInfo = {
+    roleContext: decoded.role,
+    useridContext: decoded.userid,
+  };
+
 
   React.useEffect(() => {
-    console.log("got you" + props.location.userId);
     setUserId(props.location.userId);    
   }, [props.user])
 
@@ -123,6 +126,7 @@ export default function MainContent(props) {
     })    
   }
 
+ 
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
@@ -143,8 +147,8 @@ export default function MainContent(props) {
                 marginRight: '36px',
                 ...(open && { display: 'none' }),
               }}
-            >
-              <MenuIcon />
+            >              
+              <MenuIcon />              
             </IconButton>
             <Typography
               component="h1"
@@ -180,10 +184,11 @@ export default function MainContent(props) {
             </IconButton>
           </Toolbar>
           <Divider />
-            <MainListItems setTitle={setTitle}/>
-          <Divider />
-          { <List>{secondaryListItems}</List> }
+            <MainListItems setTitle={setTitle} userinfo={userInfo} />
+          <Divider />          
         </Drawer>
+
+        {/* 중앙 frame */}
         <Box
           component="main"
           sx={{
@@ -195,56 +200,15 @@ export default function MainContent(props) {
             height: '100vh',
             overflow: 'auto',
           }}
-        >                  
-        <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={8} lg={9}>                
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: 240,
-                  }}
-                >
-                  
-                  { <Chart /> }
-                </Paper>
-              </Grid>
-              {/* Recent Deposits */}
-              <Grid item xs={12} md={4} lg={3}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: 240,
-                  }}
-                >
-                  {/* <Deposits /> */}
-                </Paper>
-              </Grid>
-              {/* Recent Orders */}
-              <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  {/* <Orders /> */}
-                </Paper>
-              </Grid>
-            </Grid>
-            <Copyright sx={{ pt: 4 }} />
-            <ServerPaginationGrid apiUrl='http://localhost:8080/systems/log'/>
-            <MainRoutes/>
-          </Container>
-          
+        >          
+          <Container maxWidth="lg" sx={{ mt: 10, mb: 4 }}>            
+            <MainRoutes />
+            <Copyright sx={{ pt: 4 }} />          
+          </Container>      
         </Box>
-        
-        
+
       </Box>
+      
     </ThemeProvider>
   );
 }
-
-// export default function Main() {
-//   return <MainContent />;
-// }

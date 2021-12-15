@@ -19,7 +19,16 @@ import { useHistory } from 'react-router';
 
 export default function MainListItems(props) {  
   const [liveOpen, setLiveOpen] = React.useState(true);
+  const [settingOpen, setSettingOpen] = React.useState(true);
 
+  const superadminChk = () => {
+    if (props.userinfo.roleContext === "ROLE_SUPERADMIN") {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  
   const history = useHistory();
 
   const liveClick = () => {
@@ -38,46 +47,11 @@ export default function MainListItems(props) {
       history.push("/settingpage");
     } else if(title == "대쉬보드") {
       history.push("/dashboardpage");  
+    } else if(title == "설정") {
+      setSettingOpen(!settingOpen);
     } 
 
   }
-
-  
-  // const renderParking = () => {
-  //   const arr = [{ name: "A주차장", child: ["1번camera", "2번camera", "3번camera"]},
-  //             { name: "B주차장", child: ["4번camera", "5번camera", "3번camera"]}
-  //           ];
-
-  //   const result = [];
-  //   result.push(<Collapse in={liveOpen} timeout="auto" unmountOnExit>);
-  //   result.push(<List component="div" disablePadding>);
-  
-  //   {arr.map((data, index) => (
-  //     <List component="div" disablePadding>
-  //       <ListItemButton sx={{ pl: 4}}>
-  //         <ListItemText primary={data["name"]} />
-  //       </ListItemButton >
-  //     </List>
-  //   ))}
-    
-  //   result.push(</List></Collapse>);
-    
-  //   result.push(<Collapse in={true} timeout="auto" unmountOnExit>);
-  //   result.push(<List component="div" disablePadding>);
-
-  //   {arr.map((data, index) => (
-  //     <List component="div" disablePadding>
-  //       <ListItemButton sx={{ pl: 8}}>
-  //         <ListItemText primary={data["name"]} />
-  //       </ListItemButton >
-  //     </List>
-  //   ))}
-
-  //   result.push(</List></Collapse>);
-
-  //   return result;
-  // };
-
   
   return (
     <List>
@@ -139,19 +113,35 @@ export default function MainListItems(props) {
         </ListItemIcon>
         <ListItemText primary="공지사항" />
       </ListItem>
+
+      <ListSubheader inset>관리자 메뉴</ListSubheader>
+      <ListItem
+        button
+        onClick={() => {
+          handleMenuClick("설정");
+        }}
+      >
+        <ListItemIcon>
+          <SettingsIcon />
+        </ListItemIcon>
+        <ListItemText primary='설정' />
+        {settingOpen ? <ExpandLess /> : <ExpandMore />}
+      </ListItem>
+      <Collapse in={settingOpen} timeout='auto' unmountOnExit>
+        <List component='div' disablePadding>
+          <ListItemButton sx={{ pl: 4 }}>
+            <ListItemText primaryTypographyProps={{ fontSize: "0.9rem" }} primary='일반설정' />
+          </ListItemButton>
+          <Collapse in={true} timeout='auto' unmountOnExit>
+            <List component='div' disablePadding>
+              <ListItemButton sx={{ pl: 8 }}>
+                {superadminChk() && <ListItemText primaryTypographyProps={{ fontSize: "0.8rem" }} primary='로그' onClick={() => history.push("/logpage")} />}
+              </ListItemButton>
+            </List>
+          </Collapse>
+        </List>
+      </Collapse>
     </List>
   );
 }
-
   
-export const secondaryListItems = (
-<div>
-    <ListSubheader inset>관리자 메뉴</ListSubheader>
-    <ListItem button >
-        <ListItemIcon>          
-          <SettingsIcon />
-        </ListItemIcon>
-        <ListItemText primary="설정" />
-      </ListItem>
-</div>
-);

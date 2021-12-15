@@ -15,9 +15,9 @@ export default function Routes() {
   const implementaionCustomAxios = () => {    
     axiosApiInstance.interceptors.request.use(
       async config => {     
-        const accessToken = sessionStorage.getItem('access-token');
+        const accessToken = sessionStorage.getItem('access_token');
         if (accessToken){
-          console.log('access-token : ' + accessToken);
+          console.log('access_token : ' + accessToken);
 
           config.headers = { 
             'Authorization': `Bearer ${accessToken}`,
@@ -32,11 +32,11 @@ export default function Routes() {
   
     axiosApiInstance.interceptors.response.use((response) => response,
     
-      async (error) => {        
+      async (error) => {  
         const { response, config } = error;        
         
         if(response.status == 403) {
-          let token = sessionStorage.getItem('refresh-token');
+          let token = sessionStorage.getItem('refresh_token');
           if (token){
             console.log('refresh token : ' + token);
             
@@ -49,11 +49,11 @@ export default function Routes() {
               console.log("call refresh");
 
               if (res.status == 200) {                
-                sessionStorage.setItem('access-token', res.data["access-token"]);
-                sessionStorage.setItem('refresh-token', res.data["refresh-token"]);
+                sessionStorage.setItem('access_token', res.data["access_token"]);
+                sessionStorage.setItem('refresh_token', res.data["refresh_token"]);
 
                 config.headers = { 
-                  'Authorization': `Bearer ${res.data['access-token']}`,
+                  'Authorization': `Bearer ${res.data['access_token']}`,
                   'Accept': 'application/json',
                 }                
 

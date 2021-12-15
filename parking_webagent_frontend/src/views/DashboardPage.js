@@ -7,11 +7,24 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
+
+
 export default function DashboardPage() {
     
     function createData(name, calories, fat, carbs, protein) {
         return { name, calories, fat, carbs, protein };
     }
+
+    function Copyright(props) {
+        return (
+          <Typography variant="body2" color="text.secondary" align="center" {...props}>
+            {'Copyright © Nuricon'}
+            {' '}
+            {new Date().getFullYear()}
+            {'.'}
+          </Typography>
+        );
+      }
     
     const rows = [
         createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
@@ -23,6 +36,8 @@ export default function DashboardPage() {
 
     return (
         <div>
+          
+
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
