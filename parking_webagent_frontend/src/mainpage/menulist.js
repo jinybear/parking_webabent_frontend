@@ -20,7 +20,7 @@ import { axiosApiInstance } from '../routes';
 
 export default function MainListItems(props) {
   const [liveOpen, setLiveOpen] = React.useState(false);
-  const [test, setTest] = React.useState({});
+  const [areaList, setAreaList] = React.useState({});
 
   const history = useHistory();
 
@@ -60,7 +60,7 @@ export default function MainListItems(props) {
                 obj[_areaId] = [res[i].source_desc];
               }
             }
-            setTest({ ...test, ...obj });
+            setAreaList({ ...areaList, ...obj });
             // let aaa = [];
             // for(const key in obj){
             //   aaa.push({"areaId":key, "source_desc":obj[key]})
@@ -140,7 +140,7 @@ export default function MainListItems(props) {
       <Collapse in={liveOpen} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           {
-            Object.keys(test).map((key) => (
+            Object.keys(areaList).map((key) => (
               <>
                 <ListItemButton sx={{ pl: 10 }} onClick={() => {history.push({
                   pathname:"/parkingLotPage", 
@@ -151,7 +151,7 @@ export default function MainListItems(props) {
                 </ListItemButton>
                 <Collapse in={true} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    {test[key].map((source) => (
+                    {areaList[key].map((source) => (
                       <ListItemButton sx={{ pl: 12 }} onClick={() => {history.push({
                         pathname:"/dashboardpage",
                         state:source
