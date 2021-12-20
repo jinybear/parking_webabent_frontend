@@ -7,59 +7,51 @@ import axios from "axios";
 import { useHistory } from "react-router";
 import { axiosApiInstance } from "../routes";
 
-export default function CreateAccount(props) {
-  const userList = props.location.state;
-  console.log(userList);
-  const useridList = userList.map((m) => m.userid);
+export default function ChangeMyPassword(props) {
   const [failVO, setFailVO] = React.useState({ fail: false, message: "" });
   const history = useHistory();
+  const [nowPassword, setNowPassword] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirmPwd, setConfirmPwd] = React.useState("");
-  const [id, setId] = React.useState("");
-  const [duplacated, setDuplacated] = React.useState(false);
   const [pwAvail, setPwAvail] = React.useState(false);
 
-  //문자,숫자,특수문자 포함 4자리수이상
+  //문자,숫자,특수문자 포함 7자리수이상
   let regExpPw = /(?=.*\d{1,50})(?=.*[~`!@#$%^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{7,12}$/;
 
   const handleClose = () => {
     setFailVO({ ...failVO, fail: false });
   };
 
-  const idDupliChk = (val) => {
-    setDuplacated(useridList.includes(val));
-  };
-
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    if (id === "" || password === "" || confirmPwd === "") {
-      setFailVO({ ...failVO, fail: true, message: "필수 입력란을 모두 입력하세요" });
-    } else if (password !== confirmPwd) {
+    if (password !== confirmPwd) {
       setFailVO({ ...failVO, fail: true, message: "비밀번호를 확인하세요" });
-    } else if (duplacated) {
-      setFailVO({ ...failVO, fail: true, message: "중복된 아이디가 있습니다" });
+    } else if (data.get("password").length < 7) {
+      setFailVO({ ...failVO, fail: true, message: "7자리이상의 숫자,문자,특수문자를 입력해주세요" });
+      setPwAvail(true);
     } else if (pwAvail) {
       setFailVO({ ...failVO, fail: true, message: "알맞는 비밀번호를 입력해주세요" });
     } else {
       axiosApiInstance
         .post(
-          "http://localhost:8080/user/add",
+          "http://localhost:8080/user/changeMyPassword",
           {
-            id: data.get("id"),
-            password: data.get("password"),
+            id: props.userinfo.useridContext,
+            password: password,
           }
           //{ withCredentials: true}
         )
         .then(
           (res) => {
-            alert("계정 생성 성공");
-            history.push("/accountlist");
+            //console.log(res);
+            alert("비밀번호 변경 성공");
+            //history.push("/accountlist");
           },
           (error) => {
             console.log("got: " + error.response.data);
-            setFailVO({ ...failVO, fail: true, message: "계정생성에 실패하였습니다" });
+            setFailVO({ ...failVO, fail: true, message: "비밀번호 변경에 실패하였습니다" });
           }
         );
     }
@@ -75,11 +67,7 @@ export default function CreateAccount(props) {
         height: 600,
       }}
     >
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Button startIcon={<ListIcon />} onClick={() => history.push("/accountlist")}></Button>
-        </Grid>
-
+      <Grid container spacing={2} sx={{ mt: 5 }}>
         <Grid item xs={12}>
           <Box component='form' onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <Snackbar autoHideDuration={3000} anchorOrigin={{ vertical: "top", horizontal: "right" }} open={failVO["fail"]} onClose={handleClose}>
@@ -90,30 +78,32 @@ export default function CreateAccount(props) {
             <Container maxWidth='sm'>
               <Grid container>
                 <Grid item xs={12}>
-                  <h2>관리자 계정 생성</h2>
+                  <h2>비밀번호 변경</h2>
                 </Grid>
-                <Grid item xs={3}>
-                  <h4>ID</h4>
+                <Grid item xs={4}>
+                  <h4>현재 비밀번호</h4>
                 </Grid>
-                <Grid item xs={9}>
+                <Grid item xs={8}>
                   <TextField
-                    name='id'
-                    label='아이디'
-                    error={duplacated}
-                    helperText={duplacated ? "중복된 아이디입니다" : ""}
+                    name='nowpassword'
+                    label='비밀번호'
+                    error={pwAvail}
+                    helperText={pwAvail ? "특수문자,영문자,숫자 7자리이상 입력" : ""}
+                    placeholder='현재 비밀번호가 다릅니다'
+                    type='password'
                     onChange={(e) => {
-                      setId(e.target.value);
-                      idDupliChk(e.target.value);
+                      setNowPassword(e.target.value);
                     }}
+                    autoComplete='current-password'
                     variant='standard'
                     fullWidth
                     required
                   />
                 </Grid>
-                <Grid item xs={3}>
-                  <h4>비밀번호</h4>
+                <Grid item xs={4}>
+                  <h4>변경 비밀번호</h4>
                 </Grid>
-                <Grid item xs={9}>
+                <Grid item xs={8}>
                   <TextField
                     name='password'
                     label='비밀번호'
@@ -135,10 +125,10 @@ export default function CreateAccount(props) {
                     required
                   />
                 </Grid>
-                <Grid item xs={3}>
-                  <h4>비밀번호 확인</h4>
+                <Grid item xs={4}>
+                  <h4>변경 비밀번호 확인</h4>
                 </Grid>
-                <Grid item xs={9}>
+                <Grid item xs={8}>
                   <div>
                     <TextField
                       error={password !== confirmPwd}
@@ -163,7 +153,7 @@ export default function CreateAccount(props) {
                 <Grid item xs={12}></Grid>
               </Grid>
               <Button type='submit' variant='contained'>
-                계정 만들기
+                비밀번호 변경
               </Button>
             </Container>
           </Box>

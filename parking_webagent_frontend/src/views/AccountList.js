@@ -4,6 +4,7 @@ import { Alert, Button, Container, Paper, Snackbar, Stack } from "@mui/material"
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
+import PasswordIcon from "@mui/icons-material/Password";
 import { useHistory } from "react-router";
 import { alignProperty } from "@mui/material/styles/cssUtils";
 import { axiosApiInstance } from "../routes";
@@ -19,6 +20,7 @@ export default function DataTable(props) {
   const history = useHistory();
 
   let [data, setData] = React.useState([]); //table data
+  const [realdata, setRealdata] = React.useState([]);
   const [selectionModel, setSelectionModel] = React.useState([]); //table selection
   const [failVO, setFailVO] = React.useState({ fail: false, message: "" });
 
@@ -39,6 +41,8 @@ export default function DataTable(props) {
           return;
         }
         //=============
+
+        setRealdata(res.data);
 
         //console.log(res);
         res.data.forEach((d) => {
@@ -81,6 +85,19 @@ export default function DataTable(props) {
           setFailVO({ ...failVO, fail: true, message: "삭제실패" });
         }
       );
+    }
+  };
+
+  const handleChangePW = () => {
+    if (selectionModel.length === 0) {
+      setFailVO({ ...failVO, fail: true, message: "비밀번호를 변경할 계정을 선택하세요" });
+    } else if (selectionModel.length > 1) {
+      setFailVO({ ...failVO, fail: true, message: "비밀번호를 변경할 계정을 한개만 선택하세요" });
+    } else {
+      history.push({
+        pathname: "/changepassword",
+        state: selectionModel,
+      });
     }
   };
 
@@ -139,7 +156,7 @@ export default function DataTable(props) {
             onClick={() =>
               history.push({
                 pathname: "/createaccount",
-                state: data,
+                state: realdata,
               })
             }
           >
@@ -150,6 +167,9 @@ export default function DataTable(props) {
           </Button>
           <Button variant='outlined' color='error' startIcon={<LockOpenIcon />} onClick={unlockHandle}>
             잠금해제
+          </Button>
+          <Button variant='outlined' startIcon={<PasswordIcon />} onClick={handleChangePW}>
+            비밀변호 변경
           </Button>
         </Stack>
         <div style={{ height: 500, width: "100%" }}>
