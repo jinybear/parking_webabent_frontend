@@ -169,7 +169,7 @@ export default function ServerPaginationGrid({ apiUrl, columns }) {
             rowCount={data.totalCount}
             paginationMode="server"
             onPageChange={(newPage) =>  setPageData({...pageData, 'page':newPage})}
-            // loading={loading}
+            loading={loading}
           />
         </div>
       </Box>

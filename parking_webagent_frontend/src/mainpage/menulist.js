@@ -44,9 +44,9 @@ export default function MainListItems(props) {
 
     if (title === "라이브"){
       setLiveOpen(!liveOpen);
-      history.push("/settingpage");
+      history.push("/mainpage/settingpage");
     } else if(title == "대쉬보드") {
-      history.push("/dashboardpage");  
+      history.push("/mainpage/dashboardpage");  
     } else if(title == "설정") {
       setSettingOpen(!settingOpen);
     } 
@@ -135,7 +135,15 @@ export default function MainListItems(props) {
           <Collapse in={true} timeout='auto' unmountOnExit>
             <List component='div' disablePadding>
               <ListItemButton sx={{ pl: 8 }}>
-                {superadminChk() && <ListItemText primaryTypographyProps={{ fontSize: "0.8rem" }} primary='로그' onClick={() => history.push("/logpage")} />}
+                {superadminChk() && <ListItemText primaryTypographyProps={{ fontSize: "0.8rem" }} primary='로그' 
+                 onClick={() => history.push("/mainpage/logpage")} />}
+              </ListItemButton>
+              <ListItemButton sx={{ pl: 8 }}>
+                {superadminChk() && <ListItemText primaryTypographyProps={{ fontSize: "0.8rem" }} primary='Edge상태'
+                 onClick={() => history.push({
+                   pathname:"/mainpage/edgestatus",
+                   interval: 8000
+                })} />}
               </ListItemButton>
             </List>
           </Collapse>

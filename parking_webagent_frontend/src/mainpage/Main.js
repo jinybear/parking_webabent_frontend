@@ -87,12 +87,15 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 const mdTheme = createTheme();
 
 export default function MainContent(props) {  
+  const history = useHistory();
   const [open, setOpen] = React.useState(true);
   const [title, setTitle] = React.useState("");
   const [userId, setUserId] = React.useState("");  
   
   const token = sessionStorage.getItem("access_token");
-  console.log(token);
+  if (token == null)
+    history.push("/login");
+  
   const decoded = jwt_decode(token);
   const userInfo = {
     roleContext: decoded.role,
@@ -104,7 +107,7 @@ export default function MainContent(props) {
     setUserId(props.location.userId);    
   }, [props.user])
 
-  const history = useHistory();
+  
   const toggleDrawer = () => {
     setOpen(!open);
   };

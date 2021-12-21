@@ -67,7 +67,7 @@ export default function Login() {
       handleClose();
 
       history.push({
-        pathname: "/", 
+        pathname: "/mainpage", 
         userId: data.get('ID')
       });      
     }

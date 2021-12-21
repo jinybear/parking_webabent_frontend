@@ -17,15 +17,12 @@ export default function Routes() {
       async config => {     
         const accessToken = sessionStorage.getItem('access_token');
         if (accessToken){
-          console.log('access_token : ' + accessToken);
-
           config.headers = { 
             'Authorization': `Bearer ${accessToken}`,
             'Accept': 'application/json',
           }          
         }
 
-        console.log("pass preRequest");
         return config;
       }
     );
@@ -35,29 +32,25 @@ export default function Routes() {
       async (error) => {  
         const { response, config } = error;        
         
-        if(response.status == 403) {
+        if(response.status == 403) {          
           let token = sessionStorage.getItem('refresh_token');
-          if (token){
-            console.log('refresh token : ' + token);
-            
+          if (token){            
             axios.post(      
               'http://localhost:8080/user/refresh',
               {
                 token: token
               },
             ).then((res) => {
-              console.log("call refresh");
-
               if (res.status == 200) {                
                 sessionStorage.setItem('access_token', res.data["access_token"]);
                 sessionStorage.setItem('refresh_token', res.data["refresh_token"]);
-
+                
                 config.headers = { 
                   'Authorization': `Bearer ${res.data['access_token']}`,
                   'Accept': 'application/json',
                 }                
 
-                return axiosApiInstance(config);                  
+                return axiosApiInstance(config);
               } else {                
                 history.push("/login");
               }
@@ -69,7 +62,8 @@ export default function Routes() {
             history.push("/login");            
           }
         }     
-        Promise.reject(error);    
+        //Promise.reject(error);    
+        throw error;
       }
     );
   }
@@ -80,7 +74,7 @@ export default function Routes() {
     <div>
       <Switch>
           <Route path="/login" component={Login} />
-          <Route path="/" component={MainContent} />
+          <Route path="/mainpage" component={MainContent} />
       </Switch>
     </div>
   );
