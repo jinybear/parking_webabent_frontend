@@ -7,9 +7,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { axiosApiInstance } from "../routes";
-import { Watch } from "@mui/icons-material";
 
-export default function BasicTable(props) {
+export default function ParkingLotPage(props) {
   const areaId = props.location.state;
   const [data, setData] = React.useState([]);
   const [allPkFull, setAllPkFull] = React.useState();
@@ -63,7 +62,7 @@ export default function BasicTable(props) {
       });
 
     axiosApiInstance
-      .post("http://localhost:8080/OutParking", null, {
+      .post("http://localhost:8080/outParking", null, {
         params: { areaId },
       })
       .then((outParkingLive) => {
