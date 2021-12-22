@@ -38,7 +38,8 @@ export default function ChangeMyPassword(props) {
         .post(
           "http://localhost:8080/user/changeMyPassword",
           {
-            id: props.userinfo.useridContext,
+            id: props.userinfo.uuidContext,
+            nowpassword: nowPassword,
             password: password,
           }
           //{ withCredentials: true}
@@ -47,11 +48,12 @@ export default function ChangeMyPassword(props) {
           (res) => {
             //console.log(res);
             alert("비밀번호 변경 성공");
-            //history.push("/accountlist");
+            history.push("/dashboardpage");
           },
           (error) => {
             console.log("got: " + error.response.data);
-            setFailVO({ ...failVO, fail: true, message: "비밀번호 변경에 실패하였습니다" });
+            setFailVO({ ...failVO, fail: true, message: error.response.data });
+            //setFailVO({ ...failVO, fail: true, message: "비밀번호 변경에 실패하였습니다" });
           }
         );
     }
@@ -87,9 +89,6 @@ export default function ChangeMyPassword(props) {
                   <TextField
                     name='nowpassword'
                     label='비밀번호'
-                    error={pwAvail}
-                    helperText={pwAvail ? "특수문자,영문자,숫자 7자리이상 입력" : ""}
-                    placeholder='현재 비밀번호가 다릅니다'
                     type='password'
                     onChange={(e) => {
                       setNowPassword(e.target.value);

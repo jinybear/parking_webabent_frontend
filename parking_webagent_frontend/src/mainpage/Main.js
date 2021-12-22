@@ -96,7 +96,9 @@ function MainContent() {
   const userInfo = {
     roleContext: decoded.role,
     useridContext: decoded.userid,
+    uuidContext: decoded.uuid,
   };
+  //console.log(userInfo);
 
   const history = useHistory();
   const toggleDrawer = () => {
