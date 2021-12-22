@@ -19,7 +19,7 @@ export default function ChangeMyPassword(props) {
   let regExpPw = /(?=.*\d{1,50})(?=.*[~`!@#$%^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{7,12}$/;
 
   const handleClose = () => {
-    setFailVO({ ...failVO, fail: false });
+    setFailVO({ ...failVO, fail: false, status: "error" });
   };
 
   const handleSubmit = (event) => {
@@ -29,10 +29,10 @@ export default function ChangeMyPassword(props) {
     if (password !== confirmPwd) {
       setFailVO({ ...failVO, fail: true, message: "비밀번호를 확인하세요" });
     } else if (data.get("password").length < 7) {
-      setFailVO({ ...failVO, fail: true, message: "7자리이상의 숫자,문자,특수문자를 입력해주세요" });
+      setFailVO({ ...failVO, fail: true, status: "error", message: "7자리이상의 숫자,문자,특수문자를 입력해주세요" });
       setPwAvail(true);
     } else if (pwAvail) {
-      setFailVO({ ...failVO, fail: true, message: "알맞는 비밀번호를 입력해주세요" });
+      setFailVO({ ...failVO, fail: true, status: "error", message: "알맞는 비밀번호를 입력해주세요" });
     } else {
       axiosApiInstance
         .post(
@@ -47,12 +47,14 @@ export default function ChangeMyPassword(props) {
         .then(
           (res) => {
             //console.log(res);
-            alert("비밀번호 변경 성공");
-            history.push("/dashboardpage");
+            setFailVO({ ...failVO, fail: true, status: "success", message: "비밀번호 변경 성공" });
+            setTimeout(() => {
+              history.push("/dashboardpage");
+            }, 1000);
           },
           (error) => {
             console.log("got: " + error.response.data);
-            setFailVO({ ...failVO, fail: true, message: error.response.data });
+            setFailVO({ ...failVO, fail: true, status: "error", message: error.response.data });
             //setFailVO({ ...failVO, fail: true, message: "비밀번호 변경에 실패하였습니다" });
           }
         );
@@ -73,7 +75,7 @@ export default function ChangeMyPassword(props) {
         <Grid item xs={12}>
           <Box component='form' onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <Snackbar autoHideDuration={3000} anchorOrigin={{ vertical: "top", horizontal: "right" }} open={failVO["fail"]} onClose={handleClose}>
-              <Alert onClose={handleClose} severity='error'>
+              <Alert onClose={handleClose} severity={failVO["status"]}>
                 {failVO["message"]}
               </Alert>
             </Snackbar>

@@ -23,7 +23,7 @@ export default function CreateAccount(props) {
   let regExpPw = /(?=.*\d{1,50})(?=.*[~`!@#$%^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{7,12}$/;
 
   const handleClose = () => {
-    setFailVO({ ...failVO, fail: false });
+    setFailVO({ ...failVO, fail: false, status: "error" });
   };
 
   const idDupliChk = (val) => {
@@ -35,13 +35,13 @@ export default function CreateAccount(props) {
     const data = new FormData(event.currentTarget);
 
     if (id === "" || password === "" || confirmPwd === "") {
-      setFailVO({ ...failVO, fail: true, message: "필수 입력란을 모두 입력하세요" });
+      setFailVO({ ...failVO, fail: true, status: "error", message: "필수 입력란을 모두 입력하세요" });
     } else if (password !== confirmPwd) {
-      setFailVO({ ...failVO, fail: true, message: "비밀번호를 확인하세요" });
+      setFailVO({ ...failVO, fail: true, status: "error", message: "비밀번호를 확인하세요" });
     } else if (duplacated) {
-      setFailVO({ ...failVO, fail: true, message: "중복된 아이디가 있습니다" });
+      setFailVO({ ...failVO, fail: true, status: "error", message: "중복된 아이디가 있습니다" });
     } else if (pwAvail) {
-      setFailVO({ ...failVO, fail: true, message: "알맞는 비밀번호를 입력해주세요" });
+      setFailVO({ ...failVO, fail: true, status: "error", message: "알맞는 비밀번호를 입력해주세요" });
     } else {
       axiosApiInstance
         .post(
@@ -54,12 +54,15 @@ export default function CreateAccount(props) {
         )
         .then(
           (res) => {
-            alert("계정 생성 성공");
-            history.push("/accountlist");
+            //alert("계정 생성 성공");
+            setFailVO({ ...failVO, fail: true, status: "success", message: "계정생성 성공" });
+            setTimeout(() => {
+              history.push("/accountlist");
+            }, 1000);
           },
           (error) => {
             console.log("got: " + error.response.data);
-            setFailVO({ ...failVO, fail: true, message: "계정생성에 실패하였습니다" });
+            setFailVO({ ...failVO, fail: true, status: "error", message: "계정생성에 실패하였습니다" });
           }
         );
     }
@@ -83,7 +86,7 @@ export default function CreateAccount(props) {
         <Grid item xs={12}>
           <Box component='form' onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <Snackbar autoHideDuration={3000} anchorOrigin={{ vertical: "top", horizontal: "right" }} open={failVO["fail"]} onClose={handleClose}>
-              <Alert onClose={handleClose} severity='error'>
+              <Alert onClose={handleClose} severity={failVO["status"]}>
                 {failVO["message"]}
               </Alert>
             </Snackbar>

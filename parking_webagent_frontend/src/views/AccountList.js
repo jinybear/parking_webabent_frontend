@@ -25,7 +25,7 @@ export default function DataTable(props) {
   const [failVO, setFailVO] = React.useState({ fail: false, message: "" });
 
   const handleClose = () => {
-    setFailVO({ ...failVO, fail: false });
+    setFailVO({ ...failVO, fail: false, status: "error" });
   };
 
   React.useEffect(() => {
@@ -72,17 +72,17 @@ export default function DataTable(props) {
   //backend에 계정삭제 요청
   const deleteHandle = () => {
     if (selectionModel.length === 0) {
-      setFailVO({ ...failVO, fail: true, message: "삭제할 계정을 선택하세요" });
+      setFailVO({ ...failVO, fail: true, status: "error", message: "삭제할 계정을 선택하세요" });
     } else {
       axiosApiInstance.post("http://localhost:8080/user/deleteAccount", { ids: selectionModel }).then(
         (res) => {
           //console.log(res);
-          alert("삭제성공");
+          setFailVO({ ...failVO, fail: true, status: "success", message: "계정삭제 성공" });
           handlePurge();
         },
         (error) => {
           //console.log("got: " + error.response);
-          setFailVO({ ...failVO, fail: true, message: "삭제실패" });
+          setFailVO({ ...failVO, fail: true, status: "error", message: "계정삭제 실패" });
         }
       );
     }
@@ -90,9 +90,9 @@ export default function DataTable(props) {
 
   const handleChangePW = () => {
     if (selectionModel.length === 0) {
-      setFailVO({ ...failVO, fail: true, message: "비밀번호를 변경할 계정을 선택하세요" });
+      setFailVO({ ...failVO, fail: true, status: "error", message: "비밀번호를 변경할 계정을 선택하세요" });
     } else if (selectionModel.length > 1) {
-      setFailVO({ ...failVO, fail: true, message: "비밀번호를 변경할 계정을 한개만 선택하세요" });
+      setFailVO({ ...failVO, fail: true, status: "error", message: "비밀번호를 변경할 계정을 한개만 선택하세요" });
     } else {
       history.push({
         pathname: "/changepassword",
@@ -113,20 +113,20 @@ export default function DataTable(props) {
   const unlockHandle = () => {
     //console.log(lockCheck());
     if (selectionModel.length === 0) {
-      setFailVO({ ...failVO, fail: true, message: "잠금해제할 계정을 선택하세요" });
+      setFailVO({ ...failVO, fail: true, status: "error", message: "잠금해제할 계정을 선택하세요" });
     } else if (lockCheck()) {
-      setFailVO({ ...failVO, fail: true, message: "잠겨있는 계정을 선택하세요" });
+      setFailVO({ ...failVO, fail: true, status: "error", message: "잠겨있는 계정을 선택하세요" });
     } else {
       axiosApiInstance.post("http://localhost:8080/user/unlockAccount", { ids: selectionModel }).then(
         (res) => {
-          alert("잠금해제 성공");
+          setFailVO({ ...failVO, fail: true, status: "success", message: "잠금해제 성공" });
           //backend에 다시 리스트 요청
           handleData();
           //history.push("/accountlist");
         },
         (error) => {
           console.log("got: " + error.response);
-          setFailVO({ ...failVO, fail: true, message: "잠금해제 실패" });
+          setFailVO({ ...failVO, fail: true, status: "error", message: "잠금해제 실패" });
         }
       );
     }
@@ -143,7 +143,7 @@ export default function DataTable(props) {
       }}
     >
       <Snackbar autoHideDuration={3000} anchorOrigin={{ vertical: "top", horizontal: "right" }} open={failVO["fail"]} onClose={handleClose}>
-        <Alert onClose={handleClose} severity='error'>
+        <Alert onClose={handleClose} severity={failVO["status"]}>
           {failVO["message"]}
         </Alert>
       </Snackbar>
