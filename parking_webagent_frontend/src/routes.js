@@ -14,8 +14,9 @@ export default function Routes() {
 
   const implementaionCustomAxios = () => {    
     axiosApiInstance.interceptors.request.use(
-      async config => {     
+      config => {     
         const accessToken = sessionStorage.getItem('access_token');
+        
         if (accessToken){
           config.headers = { 
             'Authorization': `Bearer ${accessToken}`,
@@ -27,42 +28,40 @@ export default function Routes() {
       }
     );
   
-    axiosApiInstance.interceptors.response.use((response) => response,
-    
+    axiosApiInstance.interceptors.response.use((response) => {
+      return response;
+    },
       async (error) => {  
         const { response, config } = error;        
         
-        if(response.status == 403) {          
+        if(response.status == 403) {     
           let token = sessionStorage.getItem('refresh_token');
-          if (token){            
-            axios.post(      
+
+          if (token){       
+            console.log("try to refresh");
+            const { data } = await axios.post(
               '/api/user/refresh',
               {
                 token: token
-              },
-            ).then((res) => {
-              if (res.status == 200) {                
-                sessionStorage.setItem('access_token', res.data["access_token"]);
-                sessionStorage.setItem('refresh_token', res.data["refresh_token"]);
-                
-                config.headers = { 
-                  'Authorization': `Bearer ${res.data['access_token']}`,
-                  'Accept': 'application/json',
-                }                
+              } 
+            );
 
-                return axiosApiInstance(config);
-              } else {                
-                history.push("/login");
-              }
-            }, (error) => {
-              history.push("/login");
-              
-            })
+            const { access_token, refresh_token} = data;
+
+            sessionStorage.setItem('access_token', access_token);
+            sessionStorage.setItem('refresh_token', refresh_token); 
+            config.headers = { 
+              'Authorization': `Bearer ${access_token}`,
+              'Accept': 'application/json',
+            }       
+
+            return axiosApiInstance(config);           
           } else {
             history.push("/login");
           }
-        } else {
-          throw error;
+        } else {          
+          return Promise.reject(error);
+          //throw error;
         }
       }
     );

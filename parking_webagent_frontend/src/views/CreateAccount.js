@@ -57,7 +57,7 @@ export default function CreateAccount(props) {
             //alert("계정 생성 성공");
             setFailVO({ ...failVO, fail: true, status: "success", message: "계정생성 성공" });
             setTimeout(() => {
-              history.push("/accountlist");
+              history.push("/mainpage/accountlist");
             }, 1000);
           },
           (error) => {
@@ -80,7 +80,7 @@ export default function CreateAccount(props) {
     >
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Button startIcon={<ListIcon />} onClick={() => history.push("/accountlist")}></Button>
+          <Button startIcon={<ListIcon />} onClick={() => history.push("/mainpage/accountlist")}></Button>
         </Grid>
 
         <Grid item xs={12}>

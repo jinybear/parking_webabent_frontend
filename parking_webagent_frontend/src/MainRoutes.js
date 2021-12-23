@@ -16,10 +16,10 @@ export default function MainRoutes(props) {
                 <Route path="/mainpage/dashboardpage" component={DashboardPage} />
                 <Route path="/mainpage/logpage" component={LogPage} />
                 <Route path="/mainpage/edgestatus" component={EdgeStatusPage} />
-                <Route path='/createaccount' component={CreateAccount} />
-                <Route path='/changepassword' component={ChangePassword} />
-                <Route path='/accountlist' render={() => <AccountList userinfo={props.userinfo} />} />
-                <Route path='/changemypassword' render={() => <ChangeMyPassword userinfo={props.userinfo} />} />
+                <Route path='/mainpage/createaccount' component={CreateAccount} />
+                <Route path='/mainpage/changepassword' component={ChangePassword} />
+                <Route path='/mainpage/accountlist' render={() => <AccountList userinfo={props.userinfo} />} />
+                <Route path='/mainpage/changemypassword' render={() => <ChangeMyPassword userinfo={props.userinfo} />} />
             </Switch>
         </div>
       );

@@ -49,7 +49,7 @@ export default function ChangePassword(props) {
             //console.log(res);
             setFailVO({ ...failVO, fail: true, status: "success", message: "비밀번호 변경 성공" });
             setTimeout(() => {
-              history.push("/accountlist");
+              history.push("/mainpage/accountlist");
             }, 1000);
           },
           (error) => {
@@ -72,7 +72,7 @@ export default function ChangePassword(props) {
     >
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Button startIcon={<ListIcon />} onClick={() => history.push("/accountlist")}></Button>
+          <Button startIcon={<ListIcon />} onClick={() => history.push("/mainpage/accountlist")}></Button>
         </Grid>
 
         <Grid item xs={12}>

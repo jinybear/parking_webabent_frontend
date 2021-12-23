@@ -162,10 +162,10 @@ export default function MainListItems(props) {
                 })} />}
               </ListItemButton>
               <ListItemButton sx={{ pl: 8 }}>
-                {superadminChk() && <ListItemText primaryTypographyProps={{ fontSize: "0.8rem" }} primary='관리자 계정 관리' onClick={() => history.push("/accountlist")} />}
+                {superadminChk() && <ListItemText primaryTypographyProps={{ fontSize: "0.8rem" }} primary='관리자 계정 관리' onClick={() => history.push("/mainpage/accountlist")} />}
               </ListItemButton>
               <ListItemButton sx={{ pl: 8 }}>
-                <ListItemText primaryTypographyProps={{ fontSize: "0.8rem" }} primary='내 비밀번호 수정' onClick={() => history.push("/changemypassword")} />
+                <ListItemText primaryTypographyProps={{ fontSize: "0.8rem" }} primary='내 비밀번호 수정' onClick={() => history.push("/mainpage/changemypassword")} />
               </ListItemButton>
             </List>
           </Collapse>

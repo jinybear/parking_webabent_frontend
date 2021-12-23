@@ -95,7 +95,7 @@ export default function DataTable(props) {
       setFailVO({ ...failVO, fail: true, status: "error", message: "비밀번호를 변경할 계정을 한개만 선택하세요" });
     } else {
       history.push({
-        pathname: "/changepassword",
+        pathname: "/mainpage/changepassword",
         state: selectionModel,
       });
     }
@@ -155,7 +155,7 @@ export default function DataTable(props) {
             startIcon={<AddIcon />}
             onClick={() =>
               history.push({
-                pathname: "/createaccount",
+                pathname: "/mainpage/createaccount",
                 state: realdata,
               })
             }
