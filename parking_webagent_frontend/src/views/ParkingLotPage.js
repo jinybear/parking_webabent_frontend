@@ -27,14 +27,15 @@ export default function ParkingLotPage(props) {
           return;
         }
         const parkingLiveLog = [...parkingLive.data];
-        console.log(parkingLiveLog);
+        //console.log(parkingLiveLog);
         setData(parkingLive.data);
 
         const _allPkFull = parkingLive.data
-          .map((t) => t.parkingFull)
-          .reduce((prev, cur) => {
-            return prev + cur;
-          }, 0);
+        .map((t) => t.parkingFull)
+        .reduce((prev, cur) => {
+          return prev + cur;
+        }, 0);
+
         const _allPkEmpty = parkingLive.data
           .map((t) => t.parkingEmpty)
           .reduce((prev, cur) => {
@@ -49,11 +50,6 @@ export default function ParkingLotPage(props) {
           (_allPkFull / (_allPkTotal * 1.0)) *
           100
         ).toFixed(2);
-
-        console.log(_allPkFull);
-        console.log(_allPkEmpty);
-        console.log(_allPkTotal);
-        console.log(_allPkFull);
 
         setAllPkFull(_allPkFull);
         setAllPkEmpty(_allPkEmpty);
@@ -70,7 +66,7 @@ export default function ParkingLotPage(props) {
           return;
         }
         const outParkingLiveLog = [...outParkingLive.data];
-        console.log(outParkingLiveLog);
+        //console.log(outParkingLiveLog);
         setOutData(outParkingLive.data);
       });
   }, [areaId]);
@@ -79,7 +75,7 @@ export default function ParkingLotPage(props) {
 
   return (
     <>
-      <h1>{areaId} 주차장 전체 주차/공차</h1>
+      <h2>{areaId} 주차장 전체 주차/공차</h2>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -103,7 +99,7 @@ export default function ParkingLotPage(props) {
         </Table>
       </TableContainer>
 
-      <h1>{areaId} 주차장 구열별 주차/공차</h1>
+      <h2>{areaId} 주차장 구열별 주차/공차</h2>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -132,7 +128,7 @@ export default function ParkingLotPage(props) {
         </Table>
       </TableContainer>
 
-      <h1>{areaId} 감시 대상 불법 주차</h1>
+      <h2>{areaId} 감시 대상 불법 주차</h2>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>

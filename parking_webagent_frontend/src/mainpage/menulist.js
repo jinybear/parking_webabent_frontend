@@ -49,7 +49,7 @@ export default function MainListItems(props) {
           }
 
           const res = [...response.data];
-          console.log(res);
+          //console.log(res);
 
           const liveMenu = () => {
             let obj = {};
@@ -176,7 +176,6 @@ export default function MainListItems(props) {
                           pathname: "/cameraLivePage",
                           state: sourceId,
                         });
-                        console.log(sourceId);
                       }}
                     >
                       <ListItemText
