@@ -19,7 +19,7 @@ export default function CustomizedTables(props) {
   const [data, setData] = React.useState([]);
 
   axiosApiInstance
-    .post("http://localhost:8080/parkingLot", null,{ 
+    .post("/api/parkingLot", null,{ 
     params: {areaId}
   }).then((res)=>{
     if(res.data === null){

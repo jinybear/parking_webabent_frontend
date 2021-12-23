@@ -19,7 +19,7 @@ export default function ParkingLotPage(props) {
 
   React.useEffect(() => {
     axiosApiInstance
-      .post("http://localhost:8080/parkingLot", null, {
+      .post("/api/parkingLot", null, {
         params: { areaId },
       })
       .then((parkingLive) => {
@@ -58,7 +58,7 @@ export default function ParkingLotPage(props) {
       });
 
     axiosApiInstance
-      .post("http://localhost:8080/outParking", null, {
+      .post("/api/outParking", null, {
         params: { areaId },
       })
       .then((outParkingLive) => {

@@ -125,7 +125,7 @@ export default function MainListItems(props) {
                 sx={{ pl: 10 }}
                 onClick={() => {
                   history.push({
-                    pathname: "/parkingLotPage",
+                    pathname: "/mainpage/parkingLotPage",
                     state: key,
                   });
                 }}
@@ -142,7 +142,7 @@ export default function MainListItems(props) {
                       sx={{ pl: 12 }}
                       onClick={() => {
                         history.push({
-                          pathname: "/cameraLivePage",
+                          pathname: "/mainpage/cameraLivePage",
                           state: sourceId,
                         });
                       }}
