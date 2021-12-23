@@ -13,12 +13,19 @@ import CommentIcon from "@mui/icons-material/Comment";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import VideocamIcon from "@mui/icons-material/Videocam";
-import { ExpandLess, ExpandMore, HeadsetMicSharp } from "@mui/icons-material";
+import {
+  ExpandLess,
+  ExpandMore,
+  HeadsetMicSharp,
+  SystemSecurityUpdate,
+} from "@mui/icons-material";
 import { useHistory } from "react-router";
+import { axiosApiInstance } from "../routes";
 
 export default function MainListItems(props) {
   const [liveOpen, setLiveOpen] = React.useState(true);
   const [settingOpen, setSettingOpen] = React.useState(true);
+  const [areaList, setAreaList] = React.useState({});
 
   const superadminChk = () => {
     if (props.userinfo.roleContext === "ROLE_SUPERADMIN") {
@@ -42,15 +49,49 @@ export default function MainListItems(props) {
     setTitle(title);
 
     if (title === "라이브") {
-      setLiveOpen(!liveOpen);      
-    } else if(title == "대쉬보드") {
-      history.push("/mainpage/dashboardpage");  
+      setLiveOpen(!liveOpen);
+      //history.push("/settingpage");
+      try {
+        axiosApiInstance.post("/api/live").then((response) => {
+          if (response.data === "") {
+            return;
+          }
+
+          const res = [...response.data];
+          //console.log(res);
+
+          const liveMenu = () => {
+            let obj = {};
+
+            for (let i = 0; i < res.length; i++) {
+              let _areaId = res[i].areaId;
+              if (_areaId in obj) {
+                obj[_areaId] = [...obj[_areaId], res[i].source_id];
+              } else {
+                obj[_areaId] = [res[i].source_id];
+              }
+            }
+            setAreaList({ ...areaList, ...obj });
+            //console.log(res.source);
+            // let aaa = [];
+            // for(const key in obj){
+            //   aaa.push({"areaId":key, "source_desc":obj[key]})
+            // }
+          };
+          liveMenu();
+        });
+      } catch (e) {
+        console.log(e);
+      }
+      //React.fetchData();
+    } else if (title == "대쉬보드") {
+      history.push("/mainpage/dashboardpage");
     } else if(title == "설정") {
       setSettingOpen(!settingOpen);
     } 
+  };
 
-  }
-  
+ 
   return (
     <List>
       <ListItem
@@ -76,34 +117,46 @@ export default function MainListItems(props) {
         <ListItemText primary='라이브' />
         {liveOpen ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
-      <Collapse in={liveOpen} timeout='auto' unmountOnExit>
-        <List component='div' disablePadding>
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemText primaryTypographyProps={{ fontSize: "0.9rem" }} primary='A주차장' />
-          </ListItemButton>
-          <Collapse in={true} timeout='auto' unmountOnExit>
-            <List component='div' disablePadding>
-              <ListItemButton sx={{ pl: 8 }}>
-                <ListItemText primaryTypographyProps={{ fontSize: "0.8rem" }} primary='A주차장-1번 camera' />
+      <Collapse in={liveOpen} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          {Object.keys(areaList).map((key) => (
+            <>
+              <ListItemButton
+                sx={{ pl: 10 }}
+                onClick={() => {
+                  history.push({
+                    pathname: "/parkingLotPage",
+                    state: key,
+                  });
+                }}
+              >
+                <ListItemText
+                  primaryTypographyProps={{ fontSize: "0.9rem" }}
+                  primary={key}
+                ></ListItemText>
               </ListItemButton>
-              <ListItemButton sx={{ pl: 8 }}>
-                <ListItemText primaryTypographyProps={{ fontSize: "0.8rem" }} primary='A주차장-2번 camera' />
-              </ListItemButton>
-            </List>
-          </Collapse>
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemText primaryTypographyProps={{ fontSize: "0.9rem" }} primary='B주차장' />
-          </ListItemButton>
-          <Collapse in={true} timeout='auto' unmountOnExit>
-            <List component='div' disablePadding>
-              <ListItemButton sx={{ pl: 8 }}>
-                <ListItemText primaryTypographyProps={{ fontSize: "0.8rem" }} primary='B주차장-1번 camera' />
-              </ListItemButton>
-              <ListItemButton sx={{ pl: 8 }}>
-                <ListItemText primaryTypographyProps={{ fontSize: "0.8rem" }} primary='B주차장-2번 camera' />
-              </ListItemButton>
-            </List>
-          </Collapse>
+              <Collapse in={true} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  {areaList[key].map((sourceId) => (
+                    <ListItemButton
+                      sx={{ pl: 12 }}
+                      onClick={() => {
+                        history.push({
+                          pathname: "/cameraLivePage",
+                          state: sourceId,
+                        });
+                      }}
+                    >
+                      <ListItemText
+                        primaryTypographyProps={{ fontSize: "0.8rem" }}
+                        primary={sourceId}
+                      />
+                    </ListItemButton>
+                  ))}
+                </List>
+              </Collapse>
+            </>
+          ))}
         </List>
       </Collapse>
 
@@ -174,4 +227,3 @@ export default function MainListItems(props) {
     </List>
   );
 }
-  

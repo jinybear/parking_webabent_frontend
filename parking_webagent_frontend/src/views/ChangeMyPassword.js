@@ -49,7 +49,7 @@ export default function ChangeMyPassword(props) {
             //console.log(res);
             setFailVO({ ...failVO, fail: true, status: "success", message: "비밀번호 변경 성공" });
             setTimeout(() => {
-              history.push("/dashboardpage");
+              history.push("/mainpage/dashboardpage");
             }, 1000);
           },
           (error) => {
