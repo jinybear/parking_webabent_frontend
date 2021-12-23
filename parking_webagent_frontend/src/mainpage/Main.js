@@ -120,7 +120,7 @@ export default function MainContent(props) {
 
   const requestLogout = () => {
     axiosApiInstance.post(      
-      'http://localhost:8080/user/logout'
+      '/api/user/logout',
     ).then((res) => {
       history.push("/login");
       

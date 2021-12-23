@@ -36,7 +36,7 @@ export default function Routes() {
           let token = sessionStorage.getItem('refresh_token');
           if (token){            
             axios.post(      
-              'http://localhost:8080/user/refresh',
+              '/api/user/refresh',
               {
                 token: token
               },

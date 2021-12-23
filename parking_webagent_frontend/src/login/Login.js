@@ -53,7 +53,7 @@ export default function Login() {
     });
     
     axios.post(      
-      'http://localhost:8080/user/login',
+      '/api/user/login',
       {
         id: data.get('ID'),
         password: data.get('password')

@@ -4,7 +4,7 @@ import ServerPaginationGrid from '../util/Table/ServerPaginationGrid';
 export default function LogPage() {
     console.log("call logpage");
     const param = {
-        "apiUrl": 'http://localhost:8080/systems/log', 
+        "apiUrl": '/api/systems/log', 
         "columns": [
          {
            field: "id",          // database table column과 매칭할 속성

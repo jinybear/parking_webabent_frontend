@@ -14,7 +14,6 @@ import DateRangePicker from '@mui/lab/DateRangePicker';
 function loadServerRows(apiUrl, page, size, isDesc, startDate, endDate) {  
   return new Promise((resolve) => {   
     axiosApiInstance.get(
-      //'http://localhost:8080/systems/log'
       apiUrl + '?page=' + page + '&size=' + size + '&asc=' + (isDesc == "ASC")
     ).then((res) => {
       resolve(res.data);      

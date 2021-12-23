@@ -12,7 +12,7 @@ export default function EdgeStatusPage(props) {
 
     function request() {
         axiosApiInstance.get(      
-            'http://localhost:8080/systems/edgestatus'
+            '/api/systems/edgestatus'
           ).then((res) => {              
             setRows(res.data);
           }, (error) => {
