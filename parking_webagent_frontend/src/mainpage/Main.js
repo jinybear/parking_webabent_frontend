@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 import { useHistory } from "react-router-dom";
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -29,11 +29,9 @@ import jwt_decode from "jwt-decode";
 
 function Copyright(props) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © Nuricon'}
-      {' '}
-      {new Date().getFullYear()}
-      {'.'}
+    <Typography variant='body2' color='text.secondary' align='center' {...props}>
+      {"Copyright © Nuricon"} {new Date().getFullYear()}
+      {"."}
     </Typography>
   );
 }
@@ -41,67 +39,67 @@ function Copyright(props) {
 const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
+  shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(['width', 'margin'], {
+  transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
+    transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
   }),
 }));
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    '& .MuiDrawer-paper': {
-      position: 'relative',
-      whiteSpace: 'nowrap',
-      width: drawerWidth,
-      transition: theme.transitions.create('width', {
+const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== "open" })(({ theme, open }) => ({
+  "& .MuiDrawer-paper": {
+    position: "relative",
+    whiteSpace: "nowrap",
+    width: drawerWidth,
+    transition: theme.transitions.create("width", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    boxSizing: "border-box",
+    ...(!open && {
+      overflowX: "hidden",
+      transition: theme.transitions.create("width", {
         easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
+        duration: theme.transitions.duration.leavingScreen,
       }),
-      boxSizing: 'border-box',
-      ...(!open && {
-        overflowX: 'hidden',
-        transition: theme.transitions.create('width', {
-          easing: theme.transitions.easing.sharp,
-          duration: theme.transitions.duration.leavingScreen,
-        }),
-        width: theme.spacing(7),
-        [theme.breakpoints.up('sm')]: {
-          width: theme.spacing(9),
-        },
-      }),
-    },
-  }),
-);
+      width: theme.spacing(7),
+      [theme.breakpoints.up("sm")]: {
+        width: theme.spacing(9),
+      },
+    }),
+  },
+}));
 
 const mdTheme = createTheme();
 
 export default function MainContent(props) {  
   const history = useHistory();
   const [open, setOpen] = React.useState(true);
-  const [title, setTitle] = React.useState("");
+  const [title, setTitle] = React.useState("대쉬보드");
   const [userId, setUserId] = React.useState("");  
   
   const token = sessionStorage.getItem("access_token");
   if (token == null)
     history.push("/login");
   
+
   const decoded = jwt_decode(token);
   const userInfo = {
     roleContext: decoded.role,
     useridContext: decoded.userid,
+    uuidContext: decoded.uuid,
   };
-
+  //console.log(userInfo);
 
   React.useEffect(() => {
     setUserId(props.location.userId);    
@@ -113,8 +111,8 @@ export default function MainContent(props) {
   };
 
   const [openLogoutAlarm, setOpenLogoutAlarm] = React.useState(false);
-  
-  const handleLogout = () => {    
+
+  const handleLogout = () => {
     setOpenLogoutAlarm(true);
   };
 
@@ -132,34 +130,27 @@ export default function MainContent(props) {
  
   return (
     <ThemeProvider theme={mdTheme}>
-      <Box sx={{ display: 'flex' }}>
-        
+      <Box sx={{ display: "flex" }}>
         <CssBaseline />
-        <AppBar position="absolute" open={open}>
+        <AppBar position='absolute' open={open}>
           <Toolbar
             sx={{
-              pr: '24px', // keep right padding when drawer closed
+              pr: "24px", // keep right padding when drawer closed
             }}
           >
             <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
+              edge='start'
+              color='inherit'
+              aria-label='open drawer'
               onClick={toggleDrawer}
               sx={{
-                marginRight: '36px',
-                ...(open && { display: 'none' }),
+                marginRight: "36px",
+                ...(open && { display: "none" }),
               }}
             >              
               <MenuIcon />              
             </IconButton>
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              sx={{ flexGrow: 1 }}
-            >
+            <Typography component='h1' variant='h6' color='inherit' noWrap sx={{ flexGrow: 1 }}>
               {title}
             </Typography>            
             
@@ -168,17 +159,16 @@ export default function MainContent(props) {
             <IconButton onClick={handleLogout} color = "inherit" title="logout">
               <LogoutIcon style={{marginLeft: '25px'}} />
             </IconButton>
-            
           </Toolbar>
         </AppBar>
-        { openLogoutAlarm ? <AlertDialog level="info" title="logout" message="정말로 로그아웃 하시겠습니까?" open={setOpenLogoutAlarm} doYes={requestLogout}/>: null }
-        
-        <Drawer variant="permanent" open={open}>                
+        {openLogoutAlarm ? <AlertDialog level='info' title='logout' message='정말로 로그아웃 하시겠습니까?' open={setOpenLogoutAlarm} doYes={requestLogout} /> : null}
+
+        <Drawer variant='permanent' open={open}>
           <Toolbar
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
               px: [1],
             }}
           >
@@ -193,23 +183,20 @@ export default function MainContent(props) {
 
         {/* 중앙 frame */}
         <Box
-          component="main"
+          component='main'
           sx={{
-            backgroundColor: (theme) =>
-              theme.palette.mode === 'light'
-                ? theme.palette.grey[100]
-                : theme.palette.grey[900],
+            backgroundColor: (theme) => (theme.palette.mode === "light" ? theme.palette.grey[100] : theme.palette.grey[900]),
             flexGrow: 1,
-            height: '100vh',
-            overflow: 'auto',
+            height: "100vh",
+            overflow: "auto",
           }}
-        >          
-          <Container maxWidth="lg" sx={{ mt: 10, mb: 4 }}>            
-            <MainRoutes />
-            <Copyright sx={{ pt: 4 }} />          
-          </Container>      
+        >
+          <Toolbar />
+          <Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
+            <MainRoutes userinfo={userInfo} />
+            <Copyright sx={{ pt: 4 }} />
+          </Container>
         </Box>
-
       </Box>
       
     </ThemeProvider>

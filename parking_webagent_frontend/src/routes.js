@@ -1,8 +1,8 @@
 import { Switch, Route, BrowserRouter as Router, Redirect } from "react-router-dom";
 import { useHistory } from "react-router-dom";
-import Login from "./login/Login"
-import Main from "./mainpage/Main"
-import axios from 'axios';
+import Login from "./login/Login";
+import Main from "./mainpage/Main";
+import axios from "axios";
 import { LineAxisOutlined } from "@mui/icons-material";
 import MainContent from "./mainpage/Main";
 
@@ -59,16 +59,16 @@ export default function Routes() {
               
             })
           } else {
-            history.push("/login");            
+            history.push("/login");
           }
-        }     
-        //Promise.reject(error);    
-        throw error;
+        } else {
+          throw error;
+        }
       }
     );
-  }
-  
-  implementaionCustomAxios();  
+  };
+
+  implementaionCustomAxios();
 
   return (
     <div>
@@ -80,5 +80,4 @@ export default function Routes() {
   );
 }
 
-export const axiosApiInstance = axios.create()
-
+export const axiosApiInstance = axios.create();
