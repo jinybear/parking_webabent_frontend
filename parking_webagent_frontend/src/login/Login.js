@@ -31,14 +31,17 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function Login() {
-  const [failVO, setFailVO] = React.useState({"fail": false, "message": ""});
+
+  const [test, setTest] = React.useState([]);
+
+  const [failVO, setFailVO] = React.useState([]);
   
   const history = useHistory();  
 
   const handleClose = () => {
     setFailVO({...failVO, "fail": false});
   }  
-  
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -50,21 +53,25 @@ export default function Login() {
     });
     
     axios.post(      
-      'http://localhost:8080/user/login',
+      '/api/user/login',
       {
         id: data.get('ID'),
         password: data.get('password')
       },
       //{ withCredentials: true}
-    ).then((res) => {      
-      localStorage.setItem('access_token', res.data["access-token"]);
-      localStorage.setItem('refresh_token', res.data["refresh-token"]);
+    ).then((res) => {            
+
+      sessionStorage.setItem('access_token', res.data["access_token"]);
+      sessionStorage.setItem('refresh_token', res.data["refresh_token"]);
 
       handleClose();
-      history.push("/");      
+
+      history.push({
+        pathname: "/mainpage", 
+        userId: data.get('ID')
+      });      
     }
     , (error) => {
-      console.log("got: " + error.response.data);
       setFailVO({...failVO, "fail": true, "message": error.response.data});      
     })    
   };
@@ -73,7 +80,6 @@ export default function Login() {
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />            
-        
         <Box
           sx={{
             marginTop: 8,

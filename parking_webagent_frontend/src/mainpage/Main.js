@@ -11,25 +11,21 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { secondaryListItems } from './menulist';
 import MainListItems from './menulist';
-
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
 import Chart from '../util/chart/Chart';
-import axios from 'axios';
 import { axiosApiInstance } from '../routes';
 import AlertDialog from '../util/Dialog/AlertDialog';
 import MainRoutes from '../MainRoutes';
-// import Deposits from './Deposits';
-// import Orders from './Orders';
+import ServerPaginationGrid from '../util/Table/ServerPaginationGrid';
+import jwt_decode from "jwt-decode";
 
 function Copyright(props) {
   return (
@@ -90,11 +86,28 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const mdTheme = createTheme();
 
-function MainContent() {  
+export default function MainContent(props) {  
+  const history = useHistory();
   const [open, setOpen] = React.useState(true);
   const [title, setTitle] = React.useState("");
+  const [userId, setUserId] = React.useState("");  
+  
+  const token = sessionStorage.getItem("access_token");
+  if (token == null)
+    history.push("/login");
+  
+  const decoded = jwt_decode(token);
+  const userInfo = {
+    roleContext: decoded.role,
+    useridContext: decoded.userid,
+  };
 
-  const history = useHistory();
+
+  React.useEffect(() => {
+    setUserId(props.location.userId);    
+  }, [props.user])
+
+  
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -107,7 +120,7 @@ function MainContent() {
 
   const requestLogout = () => {
     axiosApiInstance.post(      
-      'http://localhost:8080/user/logout'
+      '/api/user/logout',
     ).then((res) => {
       history.push("/login");
       
@@ -116,6 +129,7 @@ function MainContent() {
     })    
   }
 
+ 
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
@@ -136,8 +150,8 @@ function MainContent() {
                 marginRight: '36px',
                 ...(open && { display: 'none' }),
               }}
-            >
-              <MenuIcon />
+            >              
+              <MenuIcon />              
             </IconButton>
             <Typography
               component="h1"
@@ -150,7 +164,7 @@ function MainContent() {
             </Typography>            
             
             <AccountBoxIcon style={{margin: '5px'}} />
-              백승진            
+            {userId}
             <IconButton onClick={handleLogout} color = "inherit" title="logout">
               <LogoutIcon style={{marginLeft: '25px'}} />
             </IconButton>
@@ -173,10 +187,11 @@ function MainContent() {
             </IconButton>
           </Toolbar>
           <Divider />
-            <MainListItems setTitle={setTitle}/>
-          <Divider />
-          { <List>{secondaryListItems}</List> }
+            <MainListItems setTitle={setTitle} userinfo={userInfo} />
+          <Divider />          
         </Drawer>
+
+        {/* 중앙 frame */}
         <Box
           component="main"
           sx={{
@@ -188,55 +203,15 @@ function MainContent() {
             height: '100vh',
             overflow: 'auto',
           }}
-        >                  
-        <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={8} lg={9}>                
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: 240,
-                  }}
-                >
-                  
-                  { <Chart /> }
-                </Paper>
-              </Grid>
-              {/* Recent Deposits */}
-              <Grid item xs={12} md={4} lg={3}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: 240,
-                  }}
-                >
-                  {/* <Deposits /> */}
-                </Paper>
-              </Grid>
-              {/* Recent Orders */}
-              <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  {/* <Orders /> */}
-                </Paper>
-              </Grid>
-            </Grid>
-            <Copyright sx={{ pt: 4 }} />
-            <MainRoutes/>
-          </Container>
-          
+        >          
+          <Container maxWidth="lg" sx={{ mt: 10, mb: 4 }}>            
+            <MainRoutes />
+            <Copyright sx={{ pt: 4 }} />          
+          </Container>      
         </Box>
-        
-        
+
       </Box>
+      
     </ThemeProvider>
   );
-}
-
-export default function Main() {
-  return <MainContent />;
 }
