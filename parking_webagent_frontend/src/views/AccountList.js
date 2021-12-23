@@ -34,7 +34,7 @@ export default function DataTable(props) {
 
   //backend에 리스트 가져오기 요청
   const handleData = () => {
-    axiosApiInstance.post("http://localhost:8080/user/getAccountList").then(
+    axiosApiInstance.post("/api/user/getAccountList").then(
       (res) => {
         // 이거 좀 문제========
         if (res.data === null) {
@@ -74,7 +74,7 @@ export default function DataTable(props) {
     if (selectionModel.length === 0) {
       setFailVO({ ...failVO, fail: true, status: "error", message: "삭제할 계정을 선택하세요" });
     } else {
-      axiosApiInstance.post("http://localhost:8080/user/deleteAccount", { ids: selectionModel }).then(
+      axiosApiInstance.post("/api/user/deleteAccount", { ids: selectionModel }).then(
         (res) => {
           //console.log(res);
           setFailVO({ ...failVO, fail: true, status: "success", message: "계정삭제 성공" });
@@ -117,7 +117,7 @@ export default function DataTable(props) {
     } else if (lockCheck()) {
       setFailVO({ ...failVO, fail: true, status: "error", message: "잠겨있는 계정을 선택하세요" });
     } else {
-      axiosApiInstance.post("http://localhost:8080/user/unlockAccount", { ids: selectionModel }).then(
+      axiosApiInstance.post("/api/user/unlockAccount", { ids: selectionModel }).then(
         (res) => {
           setFailVO({ ...failVO, fail: true, status: "success", message: "잠금해제 성공" });
           //backend에 다시 리스트 요청
