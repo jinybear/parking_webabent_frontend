@@ -37,7 +37,7 @@ export default function ChangePassword(props) {
     } else {
       axiosApiInstance
         .post(
-          "http://localhost:8080/user/changePassword",
+          "/api/user/changePassword",
           {
             id: selectionModel[0],
             password: data.get("password"),

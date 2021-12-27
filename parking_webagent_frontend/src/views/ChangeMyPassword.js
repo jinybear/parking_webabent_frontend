@@ -36,7 +36,7 @@ export default function ChangeMyPassword(props) {
     } else {
       axiosApiInstance
         .post(
-          "http://localhost:8080/user/changeMyPassword",
+          "/api/user/changeMyPassword",
           {
             id: props.userinfo.uuidContext,
             nowpassword: nowPassword,

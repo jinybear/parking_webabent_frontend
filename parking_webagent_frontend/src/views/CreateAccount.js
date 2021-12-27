@@ -45,7 +45,7 @@ export default function CreateAccount(props) {
     } else {
       axiosApiInstance
         .post(
-          "http://localhost:8080/user/add",
+          "/api/user/add",
           {
             id: data.get("id"),
             password: data.get("password"),

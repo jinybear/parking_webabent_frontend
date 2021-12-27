@@ -34,7 +34,7 @@ export default function Routes() {
       async (error) => {  
         const { response, config } = error;        
         
-        if(response.status == 403) {     
+        if(response.status == 401) {     
           let token = sessionStorage.getItem('refresh_token');
 
           if (token){       
