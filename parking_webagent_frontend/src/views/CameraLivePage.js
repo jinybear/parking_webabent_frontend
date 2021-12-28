@@ -8,20 +8,33 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { CloseOutlined } from "@mui/icons-material";
+import { axiosApiInstance } from "../routes";
 
 export default function CameraLivePage(props) {
   const ws = React.useRef(null);
   const sourceId = props.location.state;
   const [data, setData] = React.useState({});
-  let sectorId = [];
+  const [outParking, setOutParking] = React.useState();
   let pkFull = [];
-  let fullPercent = [];
   let pkTotal = [];
   var allPkFull = 0;
   var allFullPercent = 0;
   var allPkTotal = 0;
   //let outsidePkCount = 0;
   const [outsidePkCount, setOutsidePkCount] = React.useState();
+
+  React.useEffect(() => {
+    axiosApiInstance
+      .post("/api/cameraOutParking", null, {
+        params: { sourceId },
+      })
+      .then((cameraOutParkingCount) => {
+        if (cameraOutParkingCount.data === null) {
+          return;
+        }
+        setOutParking(cameraOutParkingCount.data);
+      });
+  }, [sourceId]);
 
   React.useEffect(() => {
     const connectOption = {
@@ -63,8 +76,6 @@ export default function CameraLivePage(props) {
         }
 
         const outsideSourceId = _payloadArray[1].split(":")[0];
-        const outsideCount = null;
-
         if (sourceId == outsideSourceId) {
           const _outsidesum = _payloadArray[1].split(":")[1];
           const outsidePkCount = Math.round((_outsidesum * 10) / 10);
@@ -179,7 +190,7 @@ export default function CameraLivePage(props) {
             <TableRow
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
-              <TableCell align="center"></TableCell>
+              <TableCell align="center">{outParking}</TableCell>
               <TableCell align="center">{outsidePkCount}</TableCell>
             </TableRow>
           </TableBody>
