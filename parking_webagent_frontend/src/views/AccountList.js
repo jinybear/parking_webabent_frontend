@@ -122,6 +122,7 @@ export default function DataTable(props) {
           setFailVO({ ...failVO, fail: true, status: "success", message: "잠금해제 성공" });
           //backend에 다시 리스트 요청
           handleData();
+          setSelectionModel({});
           //history.push("/accountlist");
         },
         (error) => {

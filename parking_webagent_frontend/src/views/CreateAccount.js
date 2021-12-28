@@ -9,7 +9,7 @@ import { axiosApiInstance } from "../routes";
 
 export default function CreateAccount(props) {
   const userList = props.location.state;
-  console.log(userList);
+  //console.log(userList);
   const useridList = userList.map((m) => m.userid);
   const [failVO, setFailVO] = React.useState({ fail: false, message: "" });
   const history = useHistory();
@@ -20,7 +20,7 @@ export default function CreateAccount(props) {
   const [pwAvail, setPwAvail] = React.useState(false);
 
   //문자,숫자,특수문자 포함 4자리수이상
-  let regExpPw = /(?=.*\d{1,50})(?=.*[~`!@#$%^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{7,12}$/;
+  let regExpPw = /(?=.*\d{1,50})(?=.*[~`!@#$%^&*()-+=]{1,50})(?=.*[a-zA-Z]{1,50}).{7,12}$/;
 
   const handleClose = () => {
     setFailVO({ ...failVO, fail: false, status: "error" });
@@ -40,6 +40,9 @@ export default function CreateAccount(props) {
       setFailVO({ ...failVO, fail: true, status: "error", message: "비밀번호를 확인하세요" });
     } else if (duplacated) {
       setFailVO({ ...failVO, fail: true, status: "error", message: "중복된 아이디가 있습니다" });
+    } else if (data.get("password").length < 7) {
+      setFailVO({ ...failVO, fail: true, status: "error", message: "7자리이상의 숫자,문자,특수문자를 입력해주세요" });
+      setPwAvail(true);
     } else if (pwAvail) {
       setFailVO({ ...failVO, fail: true, status: "error", message: "알맞는 비밀번호를 입력해주세요" });
     } else {

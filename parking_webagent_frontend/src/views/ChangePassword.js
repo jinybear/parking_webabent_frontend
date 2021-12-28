@@ -9,7 +9,7 @@ import { axiosApiInstance } from "../routes";
 
 export default function ChangePassword(props) {
   const selectionModel = props.location.state;
-  console.log(selectionModel[0]);
+  //console.log(selectionModel[0]);
   const [failVO, setFailVO] = React.useState({ fail: false, message: "" });
   const history = useHistory();
   const [password, setPassword] = React.useState("");
@@ -17,7 +17,7 @@ export default function ChangePassword(props) {
   const [pwAvail, setPwAvail] = React.useState(false);
 
   //문자,숫자,특수문자 포함 7자리수이상
-  let regExpPw = /(?=.*\d{1,50})(?=.*[~`!@#$%^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{7,12}$/;
+  let regExpPw = /(?=.*\d{1,50})(?=.*[~`!@#$%^&*()-+=]{1,50})(?=.*[a-zA-Z]{1,50}).{7,12}$/;
 
   const handleClose = () => {
     setFailVO({ ...failVO, fail: false, status: "error" });
