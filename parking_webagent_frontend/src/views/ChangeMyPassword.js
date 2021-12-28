@@ -16,7 +16,7 @@ export default function ChangeMyPassword(props) {
   const [pwAvail, setPwAvail] = React.useState(false);
 
   //문자,숫자,특수문자 포함 7자리수이상
-  let regExpPw = /(?=.*\d{1,50})(?=.*[~`!@#$%^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{7,12}$/;
+  let regExpPw = /(?=.*\d{1,50})(?=.*[~`!@#$%^&*()-+=]{1,50})(?=.*[a-zA-Z]{1,50}).{7,12}$/;
 
   const handleClose = () => {
     setFailVO({ ...failVO, fail: false, status: "error" });
