@@ -13,12 +13,7 @@ import CommentIcon from "@mui/icons-material/Comment";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import VideocamIcon from "@mui/icons-material/Videocam";
-import {
-  ExpandLess,
-  ExpandMore,
-  HeadsetMicSharp,
-  SystemSecurityUpdate,
-} from "@mui/icons-material";
+import { ExpandLess, ExpandMore, HeadsetMicSharp, SystemSecurityUpdate } from "@mui/icons-material";
 import { useHistory } from "react-router";
 import { axiosApiInstance } from "../routes";
 
@@ -86,12 +81,11 @@ export default function MainListItems(props) {
       //React.fetchData();
     } else if (title == "대쉬보드") {
       history.push("/mainpage/dashboardpage");
-    } else if(title == "설정") {
+    } else if (title == "설정") {
       setSettingOpen(!settingOpen);
-    } 
+    }
   };
 
- 
   return (
     <List>
       <ListItem
@@ -117,8 +111,8 @@ export default function MainListItems(props) {
         <ListItemText primary='라이브' />
         {liveOpen ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
-      <Collapse in={liveOpen} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
+      <Collapse in={liveOpen} timeout='auto' unmountOnExit>
+        <List component='div' disablePadding>
           {Object.keys(areaList).map((key) => (
             <>
               <ListItemButton
@@ -130,13 +124,10 @@ export default function MainListItems(props) {
                   });
                 }}
               >
-                <ListItemText
-                  primaryTypographyProps={{ fontSize: "0.9rem" }}
-                  primary={key}
-                ></ListItemText>
+                <ListItemText primaryTypographyProps={{ fontSize: "0.9rem" }} primary={key}></ListItemText>
               </ListItemButton>
-              <Collapse in={true} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
+              <Collapse in={true} timeout='auto' unmountOnExit>
+                <List component='div' disablePadding>
                   {areaList[key].map((sourceId) => (
                     <ListItemButton
                       sx={{ pl: 12 }}
@@ -147,10 +138,7 @@ export default function MainListItems(props) {
                         });
                       }}
                     >
-                      <ListItemText
-                        primaryTypographyProps={{ fontSize: "0.8rem" }}
-                        primary={sourceId}
-                      />
+                      <ListItemText primaryTypographyProps={{ fontSize: "0.8rem" }} primary={sourceId} />
                     </ListItemButton>
                   ))}
                 </List>
@@ -203,20 +191,30 @@ export default function MainListItems(props) {
           </ListItemButton>
           <Collapse in={true} timeout='auto' unmountOnExit>
             <List component='div' disablePadding>
-              <ListItemButton sx={{ pl: 8 }}>
-                {superadminChk() && <ListItemText primaryTypographyProps={{ fontSize: "0.8rem" }} primary='로그' 
-                 onClick={() => history.push("/mainpage/logpage")} />}
-              </ListItemButton>
-              <ListItemButton sx={{ pl: 8 }}>
-                {superadminChk() && <ListItemText primaryTypographyProps={{ fontSize: "0.8rem" }} primary='Edge상태'
-                 onClick={() => history.push({
-                   pathname:"/mainpage/edgestatus",
-                   interval: 8000
-                })} />}
-              </ListItemButton>
-              <ListItemButton sx={{ pl: 8 }}>
-                {superadminChk() && <ListItemText primaryTypographyProps={{ fontSize: "0.8rem" }} primary='관리자 계정 관리' onClick={() => history.push("/mainpage/accountlist")} />}
-              </ListItemButton>
+              {superadminChk() && (
+                <ListItemButton sx={{ pl: 8 }}>
+                  <ListItemText primaryTypographyProps={{ fontSize: "0.8rem" }} primary='로그' onClick={() => history.push("/mainpage/logpage")} />
+                </ListItemButton>
+              )}
+              {superadminChk() && (
+                <ListItemButton sx={{ pl: 8 }}>
+                  <ListItemText
+                    primaryTypographyProps={{ fontSize: "0.8rem" }}
+                    primary='Edge상태'
+                    onClick={() =>
+                      history.push({
+                        pathname: "/mainpage/edgestatus",
+                        interval: 8000,
+                      })
+                    }
+                  />
+                </ListItemButton>
+              )}
+              {superadminChk() && (
+                <ListItemButton sx={{ pl: 8 }}>
+                  <ListItemText primaryTypographyProps={{ fontSize: "0.8rem" }} primary='관리자 계정 관리' onClick={() => history.push("/mainpage/accountlist")} />
+                </ListItemButton>
+              )}
               <ListItemButton sx={{ pl: 8 }}>
                 <ListItemText primaryTypographyProps={{ fontSize: "0.8rem" }} primary='내 비밀번호 수정' onClick={() => history.push("/mainpage/changemypassword")} />
               </ListItemButton>
