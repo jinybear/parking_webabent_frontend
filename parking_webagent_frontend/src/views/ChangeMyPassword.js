@@ -90,7 +90,7 @@ export default function ChangeMyPassword(props) {
                 <Grid item xs={8}>
                   <TextField
                     name='nowpassword'
-                    label='비밀번호'
+                    label='현재 비밀번호'
                     type='password'
                     onChange={(e) => {
                       setNowPassword(e.target.value);
@@ -116,8 +116,11 @@ export default function ChangeMyPassword(props) {
                       setPassword(e.target.value);
                       if (e.target.value.length >= 7) {
                         setPwAvail(!regExpPw.test(e.target.value));
-                      } else {
-                        setPwAvail(false);
+                      }
+                    }}
+                    onFocus={(e) => {
+                      if (password.length < 7) {
+                        setPwAvail(true);
                       }
                     }}
                     autoComplete='current-password'

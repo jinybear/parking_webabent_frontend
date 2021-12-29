@@ -131,8 +131,11 @@ export default function CreateAccount(props) {
                       setPassword(e.target.value);
                       if (e.target.value.length >= 7) {
                         setPwAvail(!regExpPw.test(e.target.value));
-                      } else {
-                        setPwAvail(false);
+                      }
+                    }}
+                    onFocus={(e) => {
+                      if (password.length < 7) {
+                        setPwAvail(true);
                       }
                     }}
                     autoComplete='current-password'
