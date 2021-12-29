@@ -21,6 +21,7 @@ export default function Routes() {
           config.headers = { 
             'Authorization': `Bearer ${accessToken}`,
             'Accept': 'application/json',
+            'Content-Type': 'application/json',
           }          
         }
 
@@ -53,6 +54,7 @@ export default function Routes() {
             config.headers = { 
               'Authorization': `Bearer ${access_token}`,
               'Accept': 'application/json',
+              'Content-Type': 'application/json',
             }       
 
             return axiosApiInstance(config);           
