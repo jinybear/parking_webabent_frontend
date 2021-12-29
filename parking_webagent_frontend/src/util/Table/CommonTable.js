@@ -43,18 +43,18 @@ export default function CommonTable(props) {
           <TableHead >
             <TableRow>
               {columns.map((column) => (
-                  <StyledTableCell align="right">{column}</StyledTableCell>    
+                  <StyledTableCell key={column.name} align="right">{column.name}</StyledTableCell>    
               ))}                
             </TableRow>
           </TableHead>
           <TableBody>
           {rows.map((row) => (
             <StyledTableRow 
-                //key={row.name}
+                key={row.name}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >       
               {Object.keys(row).map((key) => (
-                <StyledTableCell align="right">{row[key]}</StyledTableCell>  
+                <StyledTableCell key={row[key]} align="right">{row[key]}</StyledTableCell>  
               ))}                
             </StyledTableRow>
           ))}

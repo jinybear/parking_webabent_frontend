@@ -116,6 +116,7 @@ export default function MainListItems(props) {
           {Object.keys(areaList).map((key) => (
             <>
               <ListItemButton
+                key={key}
                 sx={{ pl: 10 }}
                 onClick={() => {
                   history.push({
@@ -130,6 +131,7 @@ export default function MainListItems(props) {
                 <List component='div' disablePadding>
                   {areaList[key].map((sourceId) => (
                     <ListItemButton
+                      key={sourceId}
                       sx={{ pl: 12 }}
                       onClick={() => {
                         history.push({

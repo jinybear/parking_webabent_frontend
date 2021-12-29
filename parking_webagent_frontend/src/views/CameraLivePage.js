@@ -87,6 +87,7 @@ export default function CameraLivePage(props) {
       if (ws.current.connected) {
         ws.current.unsubscribe("/decision/#");
         ws.current.end();
+        console.log("mqtt 해제");
       }
     };
   }, [sourceId]);
@@ -162,7 +163,7 @@ export default function CameraLivePage(props) {
           </TableHead>
           <TableBody>
             {doublearray.map((row) => (
-              <TableRow
+              <TableRow key={row.key}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell align="center">{row[0]}</TableCell>
