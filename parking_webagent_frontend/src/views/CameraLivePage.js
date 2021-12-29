@@ -123,7 +123,8 @@ export default function CameraLivePage(props) {
 
   return (
     <>
-      <h2>{sourceId} 카메라 전체 주차/공차</h2>
+    <h2>{sourceId}</h2>
+      <h3>카메라 전체 주차/공차</h3>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -147,7 +148,7 @@ export default function CameraLivePage(props) {
         </Table>
       </TableContainer>
 
-      <h2>{sourceId} 카메라 구열별 주차/공차</h2>
+      <h3>카메라 구역별 주차/공차</h3>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -175,7 +176,7 @@ export default function CameraLivePage(props) {
         </Table>
       </TableContainer>
 
-      <h2>{sourceId} 카메라 감시 대상 불법 주차</h2>
+      <h3>카메라 감시 대상 불법 주차</h3>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
