@@ -52,7 +52,7 @@ export default function CameraLivePage(props) {
     ws.current.subscribe("/outsidesum/#");
 
     ws.current.on("connect", () => {
-      console.log("mqtt 연결");
+      // console.log("mqtt 연결");
     });
 
     ws.current.on("message", (topic, msg) => {
@@ -87,7 +87,7 @@ export default function CameraLivePage(props) {
       if (ws.current.connected) {
         ws.current.unsubscribe("/decision/#");
         ws.current.end();
-        console.log("mqtt 해제");
+        // console.log("mqtt 해제");
       }
     };
   }, [sourceId]);
@@ -124,7 +124,7 @@ export default function CameraLivePage(props) {
 
   return (
     <>
-    <h2>{sourceId}</h2>
+      <h2>{sourceId}</h2>
       <h3>카메라 전체 주차/공차</h3>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -163,7 +163,8 @@ export default function CameraLivePage(props) {
           </TableHead>
           <TableBody>
             {doublearray.map((row) => (
-              <TableRow key={row.key}
+              <TableRow
+                key={row.key}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell align="center">{row[0]}</TableCell>
