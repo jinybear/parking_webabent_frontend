@@ -1,8 +1,10 @@
 import './App.css';
 import Routes from './routes';
+import axios from 'axios';
+import jwtDecode from 'jwt-decode';
 
 
-function App() {
+function App() { 
   return (
     <div>    
       <Routes/>

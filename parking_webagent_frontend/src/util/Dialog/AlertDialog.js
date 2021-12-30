@@ -8,30 +8,38 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Alert from '@mui/material/Alert';
 
 export default function AlertDialog(props) {  
-  const handleClose = () => {
-    props.getOpened(false);
+  const handleClose = (isYes) => {
+    // 알람 닫기 통보
+    props.open(false);
+
+    if(isYes){
+      props.doYes();
+    }  
   };  
 
   return (
     <div>
       <Dialog
-        open={true}
-        onClose={handleClose}
+        open="true"
+        onClose={() => handleClose(false)}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <Alert onClose={handleClose} severity="error">Error</Alert>
-        <DialogTitle id="alert-dialog-title">
+        <Alert onClose={() => handleClose(false)} severity={props.level}>{props.title}</Alert>
+        {/* <DialogTitle id="alert-dialog-title">
           {props.title}
-        </DialogTitle>
+        </DialogTitle> */}
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
           {props.message}
           </DialogContentText>
         </DialogContent>
         <DialogActions>          
-          <Button onClick={handleClose} autoFocus>
-            OK
+          <Button onClick={() => handleClose(true)} autoFocus>
+            Yes
+          </Button>
+          <Button onClick={() => handleClose(false)} autoFocus>
+            No
           </Button>
         </DialogActions>
       </Dialog>
@@ -43,13 +51,12 @@ export default function AlertDialog(props) {
 /*
 사용법 example
 
-1. state 와 함수 정의
-const [fail, setFail] = React.useState(false);
-const getOpened = (e) => {
-    setFail(e);
+1. 부모 component 에서 state 와 함수 정의
+const [open, setOpen] = React.useState(false);
+const doYes = () => {
+  // Yes 버튼 클릭시 실행할 코드
 }
 
-2. render 과정에서 본 component 호출시 fail state를 조건으로 부여
-{ fail ? <AlertDialog level="error" title="hey" message="Login 실패 - 입력정보를 확인하세요." getOpened={getOpened} />: null }
-
+2. AlertDialog component 호출 방법
+{ open ? <AlertDialog level="error" title="hey" message="Login 실패 - 입력정보를 확인하세요." open={setOpen} doYes={doYes}/>: null }
 */
