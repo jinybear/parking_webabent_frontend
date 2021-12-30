@@ -40,10 +40,10 @@ export default function Login() {
     const data = new FormData(event.currentTarget);
 
     // eslint-disable-next-line no-console
-    console.log({
-      id: data.get('ID'),
-      password: data.get('password'),
-    });
+    // console.log({
+    //   id: data.get('ID'),
+    //   password: data.get('password'),
+    // });
     
     axios.post(      
       '/api/user/login',

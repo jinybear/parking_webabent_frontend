@@ -53,7 +53,7 @@ export default function ServerPaginationGrid({ apiUrl, columns }) {
     let active = true;
 
     (async () => {
-      console.log(pageData);
+      //console.log(pageData);
       setLoading(true);
       const res = await loadServerRows(pageData.url, pageData.page, pageData.size, pageData.isDesc, filteringDate[0], filteringDate[1]);
       

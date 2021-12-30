@@ -16,7 +16,7 @@ export default function ChangeMyPassword(props) {
   const [pwAvail, setPwAvail] = React.useState(false);
 
   //문자,숫자,특수문자 포함 7자리수이상
-  let regExpPw = /(?=.*\d{1,50})(?=.*[~`!@#$%^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{7,12}$/;
+  let regExpPw = /(?=.*\d{1,50})(?=.*[~`!@#$%^&*()-+=]{1,50})(?=.*[a-zA-Z]{1,50}).{7,12}$/;
 
   const handleClose = () => {
     setFailVO({ ...failVO, fail: false, status: "error" });
@@ -36,7 +36,7 @@ export default function ChangeMyPassword(props) {
     } else {
       axiosApiInstance
         .post(
-          "http://localhost:8080/user/changeMyPassword",
+          "/api/user/changeMyPassword",
           {
             id: props.userinfo.uuidContext,
             nowpassword: nowPassword,
@@ -90,7 +90,7 @@ export default function ChangeMyPassword(props) {
                 <Grid item xs={8}>
                   <TextField
                     name='nowpassword'
-                    label='비밀번호'
+                    label='현재 비밀번호'
                     type='password'
                     onChange={(e) => {
                       setNowPassword(e.target.value);
@@ -116,8 +116,11 @@ export default function ChangeMyPassword(props) {
                       setPassword(e.target.value);
                       if (e.target.value.length >= 7) {
                         setPwAvail(!regExpPw.test(e.target.value));
-                      } else {
-                        setPwAvail(false);
+                      }
+                    }}
+                    onFocus={(e) => {
+                      if (password.length < 7) {
+                        setPwAvail(true);
                       }
                     }}
                     autoComplete='current-password'

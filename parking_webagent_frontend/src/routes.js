@@ -7,10 +7,12 @@ import { LineAxisOutlined } from "@mui/icons-material";
 import MainContent from "./mainpage/Main";
 
 export default function Routes() {
-  // let isAuthorized = sessionStorage.getItem("isAuthorized");
-
   const history = useHistory();
-  history.push("/login");
+  const token = sessionStorage.getItem("access_token");
+  if (token == null){
+    history.push("/login");
+  }
+    
 
   const implementaionCustomAxios = () => {    
     axiosApiInstance.interceptors.request.use(
@@ -21,6 +23,7 @@ export default function Routes() {
           config.headers = { 
             'Authorization': `Bearer ${accessToken}`,
             'Accept': 'application/json',
+            'Content-Type': 'application/json',
           }          
         }
 
@@ -34,7 +37,7 @@ export default function Routes() {
       async (error) => {  
         const { response, config } = error;        
         
-        if(response.status == 403) {     
+        if(response.status == 401) {     
           let token = sessionStorage.getItem('refresh_token');
 
           if (token){       
@@ -53,6 +56,7 @@ export default function Routes() {
             config.headers = { 
               'Authorization': `Bearer ${access_token}`,
               'Accept': 'application/json',
+              'Content-Type': 'application/json',
             }       
 
             return axiosApiInstance(config);           

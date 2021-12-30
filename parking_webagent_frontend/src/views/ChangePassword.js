@@ -9,7 +9,7 @@ import { axiosApiInstance } from "../routes";
 
 export default function ChangePassword(props) {
   const selectionModel = props.location.state;
-  console.log(selectionModel[0]);
+  //console.log(selectionModel[0]);
   const [failVO, setFailVO] = React.useState({ fail: false, message: "" });
   const history = useHistory();
   const [password, setPassword] = React.useState("");
@@ -17,7 +17,7 @@ export default function ChangePassword(props) {
   const [pwAvail, setPwAvail] = React.useState(false);
 
   //문자,숫자,특수문자 포함 7자리수이상
-  let regExpPw = /(?=.*\d{1,50})(?=.*[~`!@#$%^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{7,12}$/;
+  let regExpPw = /(?=.*\d{1,50})(?=.*[~`!@#$%^&*()-+=]{1,50})(?=.*[a-zA-Z]{1,50}).{7,12}$/;
 
   const handleClose = () => {
     setFailVO({ ...failVO, fail: false, status: "error" });
@@ -37,7 +37,7 @@ export default function ChangePassword(props) {
     } else {
       axiosApiInstance
         .post(
-          "http://localhost:8080/user/changePassword",
+          "/api/user/changePassword",
           {
             id: selectionModel[0],
             password: data.get("password"),
@@ -102,8 +102,11 @@ export default function ChangePassword(props) {
                       setPassword(e.target.value);
                       if (e.target.value.length >= 7) {
                         setPwAvail(!regExpPw.test(e.target.value));
-                      } else {
-                        setPwAvail(false);
+                      }
+                    }}
+                    onFocus={(e) => {
+                      if (password.length < 7) {
+                        setPwAvail(true);
                       }
                     }}
                     autoComplete='current-password'

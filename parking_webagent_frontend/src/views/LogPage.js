@@ -2,7 +2,7 @@ import * as React from 'react';
 import ServerPaginationGrid from '../util/Table/ServerPaginationGrid';
 
 export default function LogPage() {
-    console.log("call logpage");
+   //  console.log("call logpage");
     const param = {
         "apiUrl": '/api/systems/log', 
         "columns": [

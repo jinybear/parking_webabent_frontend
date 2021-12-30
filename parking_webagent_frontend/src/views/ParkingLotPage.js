@@ -31,10 +31,10 @@ export default function ParkingLotPage(props) {
         setData(parkingLive.data);
 
         const _allPkFull = parkingLive.data
-        .map((t) => t.parkingFull)
-        .reduce((prev, cur) => {
-          return prev + cur;
-        }, 0);
+          .map((t) => t.parkingFull)
+          .reduce((prev, cur) => {
+            return prev + cur;
+          }, 0);
 
         const _allPkEmpty = parkingLive.data
           .map((t) => t.parkingEmpty)
@@ -75,7 +75,9 @@ export default function ParkingLotPage(props) {
 
   return (
     <>
-      <h2>{areaId} 주차장 전체 주차/공차</h2>
+      <h2>{areaId}</h2>
+      <p> * 1분전 데이터입니다.</p>
+      <h3>주차장 전체 주차/공차</h3>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -99,7 +101,7 @@ export default function ParkingLotPage(props) {
         </Table>
       </TableContainer>
 
-      <h2>{areaId} 주차장 구열별 주차/공차</h2>
+      <h3>주차장 구역별 주차/공차</h3>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -128,7 +130,7 @@ export default function ParkingLotPage(props) {
         </Table>
       </TableContainer>
 
-      <h2>{areaId} 감시 대상 불법 주차</h2>
+      <h3>감시 대상 불법 주차</h3>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>

@@ -29,6 +29,8 @@ import { axiosApiInstance } from "../routes";
 import AlertDialog from "../util/Dialog/AlertDialog";
 import MainRoutes from "../MainRoutes";
 import jwt_decode from "jwt-decode";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 // import Deposits from './Deposits';
 // import Orders from './Orders';
 
@@ -99,6 +101,7 @@ export default function MainContent(props) {
   const [open, setOpen] = React.useState(true);
   const [title, setTitle] = React.useState("대쉬보드");
   const [userId, setUserId] = React.useState("");  
+  const [logoutFail, setLogoutFail] = React.useState(false);
   
   const token = sessionStorage.getItem("access_token");
   if (token == null)
@@ -132,14 +135,13 @@ export default function MainContent(props) {
     axiosApiInstance.post(      
       '/api/user/logout',
     ).then((res) => {
-      history.push("/login");
-      
+      history.push("/login");      
     }, (error) => {
-      console.log("failed to logout");
+      console.log("failed to logout");      
+      setLogoutFail(true);
     })    
   }
 
- 
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>
@@ -171,6 +173,11 @@ export default function MainContent(props) {
             <IconButton onClick={handleLogout} color = "inherit" title="logout">
               <LogoutIcon style={{marginLeft: '25px'}} />
             </IconButton>
+            <Snackbar autoHideDuration={3000} anchorOrigin={{ vertical: "top", horizontal: "right" }} open={logoutFail} onClose={() => setLogoutFail(false)} >
+              <Alert onClose={() => setLogoutFail(false)} severity='error'>
+                Logout 실패 - 요청이 실패했습니다. 잠시 후 다시 시도하세요.
+              </Alert>
+            </Snackbar>
           </Toolbar>
         </AppBar>
         {openLogoutAlarm ? <AlertDialog level='info' title='logout' message='정말로 로그아웃 하시겠습니까?' open={setOpenLogoutAlarm} doYes={requestLogout} /> : null}

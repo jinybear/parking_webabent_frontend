@@ -8,20 +8,33 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { CloseOutlined } from "@mui/icons-material";
+import { axiosApiInstance } from "../routes";
 
 export default function CameraLivePage(props) {
   const ws = React.useRef(null);
   const sourceId = props.location.state;
   const [data, setData] = React.useState({});
-  let sectorId = [];
+  const [outParking, setOutParking] = React.useState();
   let pkFull = [];
-  let fullPercent = [];
   let pkTotal = [];
   var allPkFull = 0;
   var allFullPercent = 0;
   var allPkTotal = 0;
   //let outsidePkCount = 0;
   const [outsidePkCount, setOutsidePkCount] = React.useState();
+
+  React.useEffect(() => {
+    axiosApiInstance
+      .post("/api/cameraOutParking", null, {
+        params: { sourceId },
+      })
+      .then((cameraOutParkingCount) => {
+        if (cameraOutParkingCount.data === null) {
+          return;
+        }
+        setOutParking(cameraOutParkingCount.data);
+      });
+  }, [sourceId]);
 
   React.useEffect(() => {
     const connectOption = {
@@ -39,7 +52,7 @@ export default function CameraLivePage(props) {
     ws.current.subscribe("/outsidesum/#");
 
     ws.current.on("connect", () => {
-      console.log("mqtt 연결");
+      // console.log("mqtt 연결");
     });
 
     ws.current.on("message", (topic, msg) => {
@@ -63,8 +76,6 @@ export default function CameraLivePage(props) {
         }
 
         const outsideSourceId = _payloadArray[1].split(":")[0];
-        const outsideCount = null;
-
         if (sourceId == outsideSourceId) {
           const _outsidesum = _payloadArray[1].split(":")[1];
           const outsidePkCount = Math.round((_outsidesum * 10) / 10);
@@ -76,6 +87,7 @@ export default function CameraLivePage(props) {
       if (ws.current.connected) {
         ws.current.unsubscribe("/decision/#");
         ws.current.end();
+        // console.log("mqtt 해제");
       }
     };
   }, [sourceId]);
@@ -112,7 +124,8 @@ export default function CameraLivePage(props) {
 
   return (
     <>
-      <h2>{sourceId} 카메라 전체 주차/공차</h2>
+      <h2>{sourceId}</h2>
+      <h3>카메라 전체 주차/공차</h3>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -136,7 +149,7 @@ export default function CameraLivePage(props) {
         </Table>
       </TableContainer>
 
-      <h2>{sourceId} 카메라 구열별 주차/공차</h2>
+      <h3>카메라 구역별 주차/공차</h3>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -151,6 +164,7 @@ export default function CameraLivePage(props) {
           <TableBody>
             {doublearray.map((row) => (
               <TableRow
+                key={row.key}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell align="center">{row[0]}</TableCell>
@@ -164,7 +178,7 @@ export default function CameraLivePage(props) {
         </Table>
       </TableContainer>
 
-      <h2>{sourceId} 카메라 감시 대상 불법 주차</h2>
+      <h3>카메라 감시 대상 불법 주차</h3>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -179,7 +193,7 @@ export default function CameraLivePage(props) {
             <TableRow
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
-              <TableCell align="center"></TableCell>
+              <TableCell align="center">{outParking}</TableCell>
               <TableCell align="center">{outsidePkCount}</TableCell>
             </TableRow>
           </TableBody>
