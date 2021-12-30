@@ -7,10 +7,12 @@ import { LineAxisOutlined } from "@mui/icons-material";
 import MainContent from "./mainpage/Main";
 
 export default function Routes() {
-  // let isAuthorized = sessionStorage.getItem("isAuthorized");
-
   const history = useHistory();
-  history.push("/login");
+  const token = sessionStorage.getItem("access_token");
+  if (token == null){
+    history.push("/login");
+  }
+    
 
   const implementaionCustomAxios = () => {    
     axiosApiInstance.interceptors.request.use(
