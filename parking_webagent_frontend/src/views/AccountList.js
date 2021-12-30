@@ -65,8 +65,10 @@ export default function DataTable(props) {
   //화면에서 선택된 계정 지우기(화면에서만 삭제)
   const handlePurge = () => {
     const res = data.filter((x) => !selectionModel.includes(x.id));
+    const realres = realdata.filter((x) => !selectionModel.includes(x.id));
     //console.log("필터된거" + res);
     setData(res);
+    setRealdata(realres);
   };
 
   //backend에 계정삭제 요청
